@@ -13,7 +13,9 @@
             --secondary-gray: #666666;
             --accent-gold: #CBB26A;
             --border-radius: 8px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 4px 12px rgba(203, 178, 106, 0.15);
+            --box-shadow-active: 0 1px 4px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s ease;
         }
 
@@ -41,8 +43,8 @@
         .loading-spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(203, 178, 106, 0.3);
-            border-top: 4px solid var(--accent-gold);
+            border: 3px solid rgba(203, 178, 106, 0.2);
+            border-top: 3px solid var(--accent-gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -65,6 +67,44 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        section {
+            scroll-margin-top: 80px;
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* iOS Safe Area Support */
+        @supports (padding: max(0px)) {
+            .header {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+            }
+            
+            .floating-buttons {
+                bottom: max(2rem, env(safe-area-inset-bottom));
+                right: max(1rem, env(safe-area-inset-right));
+            }
+            
+            .hero {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+            }
         }
 
         body {
@@ -370,6 +410,8 @@
             padding: 1rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            flex-wrap: nowrap;
+            min-height: 60px;
         }
 
         .logo {
@@ -379,7 +421,7 @@
             text-decoration: none;
             transition: all var(--transition);
             position: relative;
-            overflow: hidden;
+            white-space: nowrap;
         }
 
         .logo::before {
@@ -408,6 +450,8 @@
             gap: 2rem;
             margin: 0;
             padding: 0;
+            flex-wrap: nowrap;
+            white-space: nowrap;
         }
 
         .nav-menu li {
@@ -427,6 +471,8 @@
             padding: 0.5rem 1rem;
             border-radius: var(--border-radius);
             overflow: hidden;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .nav-link::before {
@@ -561,7 +607,7 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(203, 178, 106, 0.3);
+            box-shadow: var(--box-shadow);
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
@@ -573,7 +619,7 @@
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd, #98d8c8);
+            background: linear-gradient(45deg, var(--accent-gold), #f4d03f, var(--accent-gold));
             background-size: 400% 400%;
             border-radius: var(--border-radius);
             z-index: -1;
@@ -603,8 +649,19 @@
 
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(203, 178, 106, 0.3), 0 0 30px rgba(203, 178, 106, 0.6), 0 0 50px rgba(203, 178, 106, 0.4);
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--box-shadow-hover);
+            filter: brightness(1.1);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+            box-shadow: var(--box-shadow-active);
+            filter: brightness(0.95);
+        }
+
+        .cta-button:focus-visible {
+            outline: 3px solid rgba(203, 178, 106, 0.6);
+            outline-offset: 2px;
         }
 
         @keyframes neonGlow {
@@ -629,9 +686,11 @@
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: clamp(2rem, 4vw, 3rem);
             color: var(--primary-black);
+            text-wrap: balance;
+            line-height: 1.2;
         }
 
         .brands-grid {
@@ -678,11 +737,13 @@
         }
 
         .category-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: clamp(1.3rem, 3vw, 1.5rem);
+            margin-bottom: clamp(0.8rem, 2vw, 1rem);
             color: var(--accent-gold);
             border-bottom: 2px solid var(--accent-gold);
             padding-bottom: 0.5rem;
+            text-wrap: balance;
+            line-height: 1.3;
         }
 
         .brand-list {
@@ -795,8 +856,11 @@
         }
 
         .feature h3 {
-            margin-bottom: 1rem;
+            margin-bottom: clamp(0.8rem, 2vw, 1rem);
             color: var(--primary-black);
+            font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+            text-wrap: balance;
+            line-height: 1.3;
         }
 
         /* Contact Section */
@@ -844,18 +908,23 @@
         .contact-btn {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             padding: 1rem 2rem;
+            min-height: 44px;
             background: var(--primary-white);
             color: var(--primary-black);
             text-decoration: none;
-            border-radius: var(--border-radius);
+            border-radius: 8px;
             box-shadow: var(--box-shadow);
-            transition: var(--transition);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 600;
+            font-size: clamp(0.9rem, 2vw, 1rem);
             position: relative;
             overflow: hidden;
             animation: contact-blink 3s ease-in-out infinite;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .contact-btn::before {
@@ -905,35 +974,44 @@
             fill: currentColor;
         }
 
-        /* Floating Action Buttons */
+        /* Contact Dock */
         .floating-buttons {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            bottom: 1.5rem;
+            right: 1.5rem;
             display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            flex-direction: row;
+            gap: 0.5rem;
             z-index: 1000;
             pointer-events: auto;
             transform: none !important;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 0.5rem;
+            border: 1px solid rgba(203, 178, 106, 0.2);
         }
 
         .floating-btn {
-            width: 70px;
-            height: 70px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--accent-gold);
             color: var(--primary-black);
             border: none;
             cursor: pointer;
             box-shadow: var(--box-shadow);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
             position: relative;
             overflow: hidden;
+            min-height: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .btn-content {
@@ -998,9 +1076,19 @@
         }
 
         .floating-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(203, 178, 106, 0.4), 0 0 20px rgba(203, 178, 106, 0.6);
-            filter: brightness(1.2);
+            transform: scale(1.05);
+            box-shadow: var(--box-shadow-hover);
+            filter: brightness(1.1);
+        }
+
+        .floating-btn:active {
+            transform: scale(0.95);
+            box-shadow: var(--box-shadow-active);
+        }
+
+        .floating-btn:focus-visible {
+            outline: 2px solid rgba(203, 178, 106, 0.6);
+            outline-offset: 2px;
         }
 
         .floating-btn.zalo:hover {
@@ -1267,7 +1355,7 @@
 
         .particle {
             position: absolute;
-            background: linear-gradient(45deg, #007bff, #00d4ff, #ff6b6b, #ffd93d);
+            background: var(--accent-gold);
             border-radius: 50%;
             opacity: 0.1;
             animation: float 15s infinite linear;
@@ -1583,11 +1671,27 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .nav {
-                padding: 1rem;
+                padding: 0.8rem 1rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+                min-width: fit-content;
+                flex-shrink: 0;
             }
 
             .nav-menu {
-                gap: 1rem;
+                gap: 0.5rem;
+                flex-shrink: 0;
+                min-width: fit-content;
+            }
+
+            .nav-link {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.85rem;
+                flex-shrink: 0;
             }
 
             .hero h1 {
@@ -1621,6 +1725,26 @@
             .contact-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .nav {
+                padding: 0.6rem 0.8rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .nav-menu {
+                gap: 0.3rem;
+            }
+
+            .nav-link {
+                padding: 0.3rem 0.4rem;
+                font-size: 0.8rem;
             }
         }
 
@@ -1661,7 +1785,7 @@
         <div class="hero-content animate-on-scroll">
             <h1><span class="typing-text">Cửa hàng laptop & thiết bị di động</span></h1>
             <p class="animate-fade-in-up" style="animation-delay: 3.5s; opacity: 0;">Chuyên cung cấp các sản phẩm công nghệ chính hãng từ những thương hiệu hàng đầu thế giới với giá cả cạnh tranh và dịch vụ tận tâm.</p>
-            <a href="#brands" class="cta-button animate-slide-in-bottom" style="animation-delay: 4s; opacity: 0;">Xem sản phẩm</a>
+            <a href="#brands" class="cta-button animate-slide-in-bottom" style="animation-delay: 4s; opacity: 0;" aria-label="Xem danh sách sản phẩm laptop">Xem sản phẩm</a>
         </div>
     </section>
 
@@ -1759,7 +1883,7 @@
                     <p><strong>💬 Zalo:</strong> <a href="https://zalo.me/0825280204" style="color: var(--accent-color); text-decoration: none;">0825280204</a></p>
                 </div>
                 <div class="contact-buttons">
-                    <a href="#" class="contact-btn zalo-btn" data-contact="zalo">
+                    <a href="#" class="contact-btn zalo-btn" data-contact="zalo" aria-label="Liên hệ qua Zalo">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.54 0 3-.35 4.31-.99L22 22l-1.01-5.69C21.65 15 22 13.54 22 12c0-5.52-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
                             <circle cx="9" cy="12" r="1"/>
@@ -1768,13 +1892,13 @@
                         </svg>
                         Chat Zalo
                     </a>
-                    <a href="#" class="contact-btn facebook" data-contact="facebook">
+                    <a href="#" class="contact-btn facebook" data-contact="facebook" aria-label="Liên hệ qua Facebook">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
                         Facebook
                     </a>
-                    <a href="#" class="contact-btn phone" data-contact="phone">
+                    <a href="#" class="contact-btn phone" data-contact="phone" aria-label="Gọi điện thoại">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                             <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                         </svg>
