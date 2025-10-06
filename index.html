@@ -187,19 +187,86 @@
 
         @keyframes brandItemPulse {
             0%, 100% { 
-                transform: translateX(10px) scale(1);
+                transform: translateX(10px) scale(1) rotate(0deg);
+                border-radius: 8px;
+            }
+            25% { 
+                transform: translateX(10px) scale(1.05) rotate(1deg);
+                border-radius: 12px;
             }
             50% { 
-                transform: translateX(10px) scale(1.02);
+                transform: translateX(10px) scale(1.08) rotate(0deg);
+                border-radius: 16px;
+            }
+            75% { 
+                transform: translateX(10px) scale(1.05) rotate(-1deg);
+                border-radius: 12px;
             }
         }
 
         @keyframes brandItemSlide {
             0%, 100% { 
-                transform: translateX(10px);
+                transform: translateX(10px) skewX(0deg);
+                border-radius: 8px;
+            }
+            25% { 
+                transform: translateX(15px) skewX(2deg);
+                border-radius: 8px 16px 8px 16px;
             }
             50% { 
-                transform: translateX(15px);
+                transform: translateX(20px) skewX(0deg);
+                border-radius: 16px;
+            }
+            75% { 
+                transform: translateX(15px) skewX(-2deg);
+                border-radius: 16px 8px 16px 8px;
+            }
+        }
+
+        @keyframes brandItemMorph {
+            0%, 100% { 
+                transform: translateX(10px) scale(1) rotate(0deg);
+                border-radius: 8px;
+                background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            }
+            20% { 
+                transform: translateX(12px) scale(1.02) rotate(2deg);
+                border-radius: 20px 8px 20px 8px;
+                background: linear-gradient(225deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.08));
+            }
+            40% { 
+                transform: translateX(15px) scale(1.05) rotate(-1deg);
+                border-radius: 8px 20px 8px 20px;
+                background: linear-gradient(315deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+            }
+            60% { 
+                transform: translateX(18px) scale(1.03) rotate(3deg);
+                border-radius: 25px;
+                background: linear-gradient(45deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.12));
+            }
+            80% { 
+                transform: translateX(14px) scale(1.06) rotate(-2deg);
+                border-radius: 8px 25px 8px 25px;
+                background: linear-gradient(135deg, rgba(212, 175, 55, 0.16), rgba(212, 175, 55, 0.09));
+            }
+        }
+
+        @keyframes brandItemWave {
+            0%, 100% { 
+                transform: translateX(10px) scaleY(1) scaleX(1);
+                border-radius: 8px;
+            }
+            25% { 
+                transform: translateX(12px) scaleY(1.1) scaleX(0.95);
+                border-radius: 15px 8px 15px 8px;
+            }
+            50% { 
+                transform: translateX(16px) scaleY(0.9) scaleX(1.1);
+                border-radius: 8px 20px 8px 20px;
+            }
+            75% { 
+                transform: translateX(14px) scaleY(1.05) scaleX(0.98);
+                border-radius: 20px 8px 20px 8px;
             }
         }
 
@@ -275,21 +342,25 @@
 
         /* Header */
         .header {
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            transition: all var(--transition);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: slideDownHeader 0.8s ease-out;
+            border-bottom: 1px solid rgba(203, 178, 106, 0.2);
         }
 
         .header.scrolled {
-            background: rgba(0, 0, 0, 0.98);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(203, 178, 106, 0.3);
         }
 
         .nav {
@@ -406,15 +477,19 @@
         }
 
         .hero-content {
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
             margin-bottom: 1rem;
             font-weight: 700;
             position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            text-wrap: balance;
         }
 
         .typing-text {
@@ -432,7 +507,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-gray) 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2a2a2a 100%);
             z-index: -1;
         }
 
@@ -443,33 +518,102 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23CBB26A" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23CBB26A" stroke-width="0.3" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
             animation: float 6s ease-in-out infinite;
         }
 
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+            z-index: 1;
+        }
+
         .hero p {
-            font-size: 1.2rem;
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
             margin-bottom: 2rem;
-            opacity: 0.9;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            text-wrap: balance;
         }
 
         .cta-button {
             background: var(--accent-gold);
             color: var(--primary-black);
             padding: 1rem 2rem;
+            min-height: 44px;
             border: none;
-            border-radius: var(--border-radius);
-            font-size: 1.1rem;
+            border-radius: 8px;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(203, 178, 106, 0.3);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd, #98d8c8);
+            background-size: 400% 400%;
+            border-radius: var(--border-radius);
+            z-index: -1;
+            animation: neonGlow 3s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cta-button:hover::before {
+            opacity: 1;
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::after {
+            left: 100%;
         }
 
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(203, 178, 106, 0.3);
+            box-shadow: 0 8px 15px rgba(203, 178, 106, 0.3), 0 0 30px rgba(203, 178, 106, 0.6), 0 0 50px rgba(203, 178, 106, 0.4);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes neonGlow {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         /* Brands Section */
@@ -585,10 +729,9 @@
         }
 
         .brand-item:hover {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
-            transform: translateX(10px);
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
             color: var(--accent-gold);
+            transition: all 0.3s ease, animation 0s;
         }
 
         .brand-item:hover::before {
@@ -604,12 +747,20 @@
             border-bottom: none;
         }
 
-        .brand-item:nth-child(odd):hover {
-            animation: brandItemPulse 0.6s ease-in-out;
+        .brand-item:nth-child(4n+1):hover {
+            animation: brandItemPulse 0.8s ease-in-out;
         }
 
-        .brand-item:nth-child(even):hover {
-            animation: brandItemSlide 0.6s ease-in-out;
+        .brand-item:nth-child(4n+2):hover {
+            animation: brandItemSlide 0.8s ease-in-out;
+        }
+
+        .brand-item:nth-child(4n+3):hover {
+            animation: brandItemMorph 1s ease-in-out;
+        }
+
+        .brand-item:nth-child(4n):hover {
+            animation: brandItemWave 0.7s ease-in-out;
         }
 
         /* About Section */
@@ -763,6 +914,8 @@
             flex-direction: column;
             gap: 1rem;
             z-index: 1000;
+            pointer-events: auto;
+            transform: none !important;
         }
 
         .floating-btn {
@@ -774,13 +927,12 @@
             border: none;
             cursor: pointer;
             box-shadow: var(--box-shadow);
-            transition: var(--transition);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
             position: relative;
-            animation: float 3s ease-in-out infinite, blink-glow 2s ease-in-out infinite;
             overflow: hidden;
         }
 
@@ -846,9 +998,182 @@
         }
 
         .floating-btn:hover {
-            transform: scale(1.2) rotate(10deg);
-            box-shadow: 0 12px 25px rgba(203, 178, 106, 0.5);
-            animation: pulse 0.6s ease-in-out infinite, blink-glow 2s ease-in-out infinite;
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(203, 178, 106, 0.4), 0 0 20px rgba(203, 178, 106, 0.6);
+            filter: brightness(1.2);
+        }
+
+        .floating-btn.zalo:hover {
+            box-shadow: 0 8px 20px rgba(0, 162, 255, 0.3), 0 0 15px rgba(0, 162, 255, 0.5);
+        }
+
+        .floating-btn.facebook:hover {
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3), 0 0 15px rgba(24, 119, 242, 0.5);
+        }
+
+        .floating-btn.phone:hover {
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3), 0 0 15px rgba(76, 175, 80, 0.5);
+        }
+
+        @keyframes neonPulse {
+            0%, 100% {
+                filter: brightness(1.3) drop-shadow(0 0 5px currentColor);
+            }
+            50% {
+                filter: brightness(1.6) drop-shadow(0 0 20px currentColor);
+            }
+        }
+
+        /* Reveal Animation Styles */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-element.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-left.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-right.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-scale.revealed {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .reveal-rotate {
+            opacity: 0;
+            transform: rotate(-10deg) scale(0.9);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-rotate.revealed {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Staggered animation delays */
+        .reveal-element:nth-child(1) { transition-delay: 0.1s; }
+        .reveal-element:nth-child(2) { transition-delay: 0.2s; }
+        .reveal-element:nth-child(3) { transition-delay: 0.3s; }
+        .reveal-element:nth-child(4) { transition-delay: 0.4s; }
+        .reveal-element:nth-child(5) { transition-delay: 0.5s; }
+        .reveal-element:nth-child(6) { transition-delay: 0.6s; }
+
+        /* Parallax Scrolling Effects */
+        .parallax-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .parallax-element {
+            transition: transform 0.1s ease-out;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            transition: transform 0.1s ease-out;
+        }
+
+        .brands {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brands::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(203, 178, 106, 0.1) 0%, transparent 70%);
+            transition: transform 0.1s ease-out;
+            transform: var(--parallax-brands, translateY(0));
+            z-index: 0;
+        }
+
+        .brands > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .about {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(203, 178, 106, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            transition: transform 0.1s ease-out;
+            transform: var(--parallax-about, translateY(0));
+            z-index: 0;
+        }
+
+        .about > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -40%;
+            width: 180%;
+            height: 180%;
+            background: conic-gradient(from 0deg, rgba(203, 178, 106, 0.1), rgba(0, 123, 255, 0.1), rgba(203, 178, 106, 0.1));
+            transition: transform 0.1s ease-out;
+            transform: var(--parallax-contact, translateY(0));
+            z-index: 0;
+        }
+
+        .contact > * {
+            position: relative;
+            z-index: 1;
         }
 
         .floating-btn svg {
@@ -926,6 +1251,246 @@
         @keyframes footerShine {
             0% { left: -100%; }
             100% { left: 100%; }
+        }
+
+        /* Particles Background Effect */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: linear-gradient(45deg, #007bff, #00d4ff, #ff6b6b, #ffd93d);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+
+        .particle:nth-child(1) {
+            width: 8px;
+            height: 8px;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 20s;
+        }
+
+        .particle:nth-child(2) {
+            width: 12px;
+            height: 12px;
+            left: 20%;
+            animation-delay: 2s;
+            animation-duration: 18s;
+        }
+
+        .particle:nth-child(3) {
+            width: 6px;
+            height: 6px;
+            left: 30%;
+            animation-delay: 4s;
+            animation-duration: 22s;
+        }
+
+        .particle:nth-child(4) {
+            width: 10px;
+            height: 10px;
+            left: 40%;
+            animation-delay: 6s;
+            animation-duration: 16s;
+        }
+
+        .particle:nth-child(5) {
+            width: 14px;
+            height: 14px;
+            left: 50%;
+            animation-delay: 8s;
+            animation-duration: 24s;
+        }
+
+        .particle:nth-child(6) {
+            width: 7px;
+            height: 7px;
+            left: 60%;
+            animation-delay: 10s;
+            animation-duration: 19s;
+        }
+
+        .particle:nth-child(7) {
+            width: 9px;
+            height: 9px;
+            left: 70%;
+            animation-delay: 12s;
+            animation-duration: 21s;
+        }
+
+        .particle:nth-child(8) {
+            width: 11px;
+            height: 11px;
+            left: 80%;
+            animation-delay: 14s;
+            animation-duration: 17s;
+        }
+
+        .particle:nth-child(9) {
+            width: 5px;
+            height: 5px;
+            left: 90%;
+            animation-delay: 16s;
+            animation-duration: 23s;
+        }
+
+        .particle:nth-child(10) {
+            width: 13px;
+            height: 13px;
+            left: 15%;
+            animation-delay: 18s;
+            animation-duration: 15s;
+        }
+
+        .particle:nth-child(11) {
+            width: 8px;
+            height: 8px;
+            left: 25%;
+            animation-delay: 1s;
+            animation-duration: 20s;
+        }
+
+        .particle:nth-child(12) {
+            width: 10px;
+            height: 10px;
+            left: 35%;
+            animation-delay: 3s;
+            animation-duration: 18s;
+        }
+
+        .particle:nth-child(13) {
+            width: 6px;
+            height: 6px;
+            left: 45%;
+            animation-delay: 5s;
+            animation-duration: 22s;
+        }
+
+        .particle:nth-child(14) {
+            width: 12px;
+            height: 12px;
+            left: 55%;
+            animation-delay: 7s;
+            animation-duration: 16s;
+        }
+
+        .particle:nth-child(15) {
+            width: 9px;
+            height: 9px;
+            left: 65%;
+            animation-delay: 9s;
+            animation-duration: 24s;
+        }
+
+        .particle:nth-child(16) {
+            width: 7px;
+            height: 7px;
+            left: 75%;
+            animation-delay: 11s;
+            animation-duration: 19s;
+        }
+
+        .particle:nth-child(17) {
+            width: 11px;
+            height: 11px;
+            left: 85%;
+            animation-delay: 13s;
+            animation-duration: 21s;
+        }
+
+        .particle:nth-child(18) {
+            width: 14px;
+            height: 14px;
+            left: 95%;
+            animation-delay: 15s;
+            animation-duration: 17s;
+        }
+
+        .particle:nth-child(19) {
+            width: 5px;
+            height: 5px;
+            left: 5%;
+            animation-delay: 17s;
+            animation-duration: 23s;
+        }
+
+        .particle:nth-child(20) {
+            width: 10px;
+            height: 10px;
+            left: 50%;
+            animation-delay: 19s;
+            animation-duration: 15s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Typing Animation Effect */
+        .typing-text {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .typing-text::after {
+            content: '|';
+            position: absolute;
+            right: 0;
+            color: var(--accent-gold);
+            animation: blink 1s infinite;
+            font-weight: normal;
+        }
+
+        .typing-text.typing::after {
+            animation: blink 1s infinite;
+        }
+
+        .typing-text.completed::after {
+            display: none;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .typing-text .char {
+            opacity: 0;
+            animation: fadeInChar 0.1s ease-in-out forwards;
+        }
+
+        @keyframes fadeInChar {
+            to { opacity: 1; }
         }
 
         .back-to-top {
@@ -1108,38 +1673,38 @@
                 <div class="brand-category animate-on-scroll" style="animation-delay: 0.2s;">
                     <h3 class="category-title">Laptop</h3>
                     <ul class="brand-list">
-                        <li class="brand-item">Apple MacBook (Air, Pro)</li>
-                        <li class="brand-item">Dell (XPS, Inspiron, Latitude)</li>
-                        <li class="brand-item">HP (Pavilion, Envy, EliteBook)</li>
-                        <li class="brand-item">Lenovo (ThinkPad, IdeaPad, Legion)</li>
-                        <li class="brand-item">ASUS (ZenBook, VivoBook, ROG)</li>
-                        <li class="brand-item">Acer (Aspire, Swift, Predator)</li>
-                        <li class="brand-item">MSI (Gaming, Creator, Business)</li>
+                        <li class="brand-item reveal-left">Apple MacBook (Air, Pro)</li>
+                        <li class="brand-item reveal-right">Dell (XPS, Inspiron, Latitude)</li>
+                        <li class="brand-item reveal-left">HP (Pavilion, Envy, EliteBook)</li>
+                        <li class="brand-item reveal-right">Lenovo (ThinkPad, IdeaPad, Legion)</li>
+                        <li class="brand-item reveal-left">ASUS (ZenBook, VivoBook, ROG)</li>
+                        <li class="brand-item reveal-right">Acer (Aspire, Swift, Predator)</li>
+                        <li class="brand-item reveal-left">MSI (Gaming, Creator, Business)</li>
                     </ul>
                 </div>
 
                 <div class="brand-category animate-on-scroll" style="animation-delay: 0.4s;">
                     <h3 class="category-title">Điện thoại</h3>
                     <ul class="brand-list">
-                        <li class="brand-item">Apple iPhone (14, 15 series)</li>
-                        <li class="brand-item">Samsung Galaxy (S, Note, A series)</li>
-                        <li class="brand-item">Xiaomi (Mi, Redmi, POCO)</li>
-                        <li class="brand-item">OPPO (Find, Reno, A series)</li>
-                        <li class="brand-item">Vivo (V, Y, X series)</li>
-                        <li class="brand-item">Realme (GT, Number series)</li>
-                        <li class="brand-item">OnePlus (Flagship, Nord)</li>
+                        <li class="brand-item reveal-scale">Apple iPhone (14, 15 series)</li>
+                        <li class="brand-item reveal-rotate">Samsung Galaxy (S, Note, A series)</li>
+                        <li class="brand-item reveal-scale">Xiaomi (Mi, Redmi, POCO)</li>
+                        <li class="brand-item reveal-rotate">OPPO (Find, Reno, A series)</li>
+                        <li class="brand-item reveal-scale">Vivo (V, Y, X series)</li>
+                        <li class="brand-item reveal-rotate">Realme (GT, Number series)</li>
+                        <li class="brand-item reveal-scale">OnePlus (Flagship, Nord)</li>
                     </ul>
                 </div>
 
                 <div class="brand-category animate-on-scroll" style="animation-delay: 0.6s;">
                     <h3 class="category-title">Tablet & iPad</h3>
                     <ul class="brand-list">
-                        <li class="brand-item">Apple iPad (Air, Pro, Mini)</li>
-                        <li class="brand-item">Samsung Galaxy Tab (S, A series)</li>
-                        <li class="brand-item">Xiaomi Pad (Mi Pad series)</li>
-                        <li class="brand-item">Lenovo Tab (P, M series)</li>
-                        <li class="brand-item">Huawei MatePad</li>
-                        <li class="brand-item">Microsoft Surface</li>
+                        <li class="brand-item reveal-element">Apple iPad (Air, Pro, Mini)</li>
+                        <li class="brand-item reveal-element">Samsung Galaxy Tab (S, A series)</li>
+                        <li class="brand-item reveal-element">Xiaomi Pad (Mi Pad series)</li>
+                        <li class="brand-item reveal-element">Lenovo Tab (P, M series)</li>
+                        <li class="brand-item reveal-element">Huawei MatePad</li>
+                        <li class="brand-item reveal-element">Microsoft Surface</li>
                     </ul>
                 </div>
             </div>
@@ -1151,21 +1716,21 @@
         <div class="container">
             <h2 class="section-title animate-on-scroll">Tại sao chọn chúng tôi?</h2>
             <div class="about-content">
-                <div class="feature animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="feature animate-on-scroll reveal-scale" style="animation-delay: 0.1s;">
                     <svg class="feature-icon" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                     <h3>Bảo hành chính hãng</h3>
                     <p>Tất cả sản phẩm đều có bảo hành chính hãng từ nhà sản xuất, hỗ trợ kỹ thuật 24/7</p>
                 </div>
-                <div class="feature animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="feature animate-on-scroll reveal-element" style="animation-delay: 0.2s;">
                     <svg class="feature-icon" viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
                     <h3>Đổi trả linh hoạt</h3>
                     <p>Chính sách đổi trả trong 15 ngày, hỗ trợ đổi sang sản phẩm khác nếu không hài lòng</p>
                 </div>
-                <div class="feature animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="feature animate-on-scroll reveal-rotate" style="animation-delay: 0.3s;">
                     <svg class="feature-icon" viewBox="0 0 24 24">
                         <path d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5s-.96.06-1.42.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8z"/>
                     </svg>
@@ -1220,6 +1785,30 @@
             </div>
         </div>
     </section>
+
+    <!-- Particles Background -->
+    <div class="particles-container">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 
     <!-- Floating Action Buttons -->
     <div class="floating-buttons">
@@ -1287,6 +1876,15 @@
             
             // Back to top functionality
             setupBackToTop();
+            
+            // Initialize typing animation
+            initTypingAnimation();
+            
+            // Initialize parallax scrolling
+            initParallaxScrolling();
+            
+            // Initialize reveal animations
+            initRevealAnimations();
         });
 
         function handleContactClick(type) {
@@ -1483,6 +2081,111 @@
                 }, 500);
             }, 1000); // Show loading for 1 second minimum
         });
+
+        // Typing Animation Function
+        function initTypingAnimation() {
+            const typingElement = document.querySelector('.typing-text');
+            if (!typingElement) return;
+            
+            const text = typingElement.textContent;
+            typingElement.textContent = '';
+            typingElement.classList.add('typing');
+            
+            let charIndex = 0;
+            
+            function typeChar() {
+                if (charIndex < text.length) {
+                    const span = document.createElement('span');
+                    span.textContent = text[charIndex];
+                    span.className = 'char';
+                    span.style.animationDelay = `${charIndex * 0.05}s`;
+                    typingElement.appendChild(span);
+                    charIndex++;
+                    setTimeout(typeChar, 100);
+                } else {
+                    setTimeout(() => {
+                        typingElement.classList.remove('typing');
+                        typingElement.classList.add('completed');
+                    }, 1000);
+                }
+            }
+            
+            // Start typing after a short delay
+            setTimeout(typeChar, 500);
+        }
+
+        // Parallax Scrolling Function
+        function initParallaxScrolling() {
+            let ticking = false;
+            
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                const rateHero = scrolled * 0.3;
+                const rateBrands = scrolled * -0.2;
+                const rateAbout = scrolled * 0.15;
+                const rateContact = scrolled * -0.1;
+                
+                // Hero parallax
+                const heroBackground = document.querySelector('.hero-background');
+                if (heroBackground) {
+                    heroBackground.style.transform = `translateY(${rateHero}px)`;
+                }
+                
+                // Brands parallax
+                const brandsSection = document.querySelector('.brands');
+                if (brandsSection) {
+                    const brandsBefore = brandsSection.querySelector('::before');
+                    brandsSection.style.setProperty('--parallax-brands', `translateY(${rateBrands}px) rotate(${scrolled * 0.05}deg)`);
+                }
+                
+                // About parallax
+                const aboutSection = document.querySelector('.about');
+                if (aboutSection) {
+                    aboutSection.style.setProperty('--parallax-about', `translateY(${rateAbout}px) rotate(${scrolled * -0.02}deg)`);
+                }
+                
+                // Contact parallax
+                const contactSection = document.querySelector('.contact');
+                if (contactSection) {
+                    contactSection.style.setProperty('--parallax-contact', `translateY(${rateContact}px) rotate(${scrolled * 0.03}deg)`);
+                }
+                
+                ticking = false;
+            }
+            
+            function requestTick() {
+                if (!ticking) {
+                    requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }
+            
+            window.addEventListener('scroll', requestTick);
+        }
+
+        // Reveal Animations Function
+        function initRevealAnimations() {
+            const revealElements = document.querySelectorAll('.reveal-element, .reveal-left, .reveal-right, .reveal-scale, .reveal-rotate');
+            
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        // Optional: Stop observing after reveal
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            revealElements.forEach(element => {
+                revealObserver.observe(element);
+            });
+        }
+
     </script>
 </body>
 </html>
