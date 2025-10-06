@@ -1,0 +1,94 @@
+Dưới đây là **PROMPT HOÀN THIỆN** (chỉ cần dán vào công cụ AI để sinh code). Trang **bán laptop/điện thoại/iPad** bằng **HTML + CSS + JS thuần**, có **nút liên hệ Zalo / Facebook / Gọi điện**. Không yêu cầu backend.
+
+---
+
+### PROMPT
+
+Hãy tạo **một file `index.html` duy nhất** (HTML + CSS + JavaScript **inline**, **không dùng thư viện/CDN bên ngoài**), giao diện **tiếng Việt**, đáp ứng các yêu cầu sau:
+
+**1) Mục tiêu tổng quát**
+
+* Trang web tĩnh bán **Laptop, Điện thoại, iPad**.
+* Phong cách **hiện đại, tối giản, chuyên nghiệp** (palette đề xuất: đen–trắng–xám, điểm nhấn vàng kim #CBB26A).
+* **Responsive** đẹp trên mobile/tablet/desktop.
+* **Không dùng link ảnh bên ngoài**:
+**2) Header & Hero**
+
+* Header có logo chữ (text), menu **Sản phẩm**, **Về chúng tôi**, **Liên hệ**.
+* Hero full-width: tiêu đề “Cửa hàng laptop & thiết bị di động”, mô tả ngắn, nút CTA “Xem sản phẩm”.
+
+**3) Thanh công cụ sản phẩm**
+
+* Có **tìm kiếm** theo tên/keyword.
+* **Bộ lọc** theo danh mục: **Tất cả / Laptop / Điện thoại / iPad** (tab hoặc dropdown).
+* **Sắp xếp**: Giá tăng dần/giảm dần, Mới nhất.
+* Hiển thị số lượng kết quả.
+
+
+**5) Modal Chi tiết**
+
+
+
+**6) Khu “Về chúng tôi”**
+
+* 2–3 gạch đầu dòng: bảo hành, đổi trả, giao hàng, hỗ trợ kỹ thuật IT.
+
+**7) Khu “Liên hệ” + Nút nổi**
+
+* Thêm **nút nổi (floating action buttons)** ở **góc dưới bên phải** (mobile hiển thị dạng thanh đáy):
+
+  * **Zalo** → mở `ZALO_LINK` (ví dụ: `https://zalo.me/SDT`),
+  * **Facebook** → mở `FACEBOOK_LINK` (ví dụ: fanpage),
+  * **Gọi điện** → `tel:PHONE_NUMBER`.
+* Nút có **icon inline SVG**, tooltip, hiệu ứng hover (scale nhẹ, shadow).
+* Trong section Liên hệ (phía dưới trang) cũng hiển thị 3 nút lớn tương tự + địa chỉ cửa hàng.
+* **Cho phép cấu hình nhanh** các thông tin này qua biến hằng ở đầu file:
+
+  ```js
+  const COMPANY_NAME = "Tên cửa hàng";
+  const PHONE_NUMBER = "0977xxxxxx";
+  const ZALO_LINK = "https://zalo.me/0977xxxxxx";
+  const FACEBOOK_LINK = "https://facebook.com/tenfanpage";
+  const ADDRESS = "Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành";
+  ```
+* Khi bấm các nút liên hệ, **ghi log** vào `console` (giả lập tracking).
+
+**8) Trải nghiệm & Truy cập**
+
+* **Hover** nút: viền vàng kim + glow nhẹ.
+* **Focus ring** rõ ràng cho keyboard users; aria-label cho icon buttons.
+* Nếu `prefers-reduced-motion`, giảm animation.
+* **Lazy render** danh sách (không cần intersection observer, chỉ tối ưu DOM đơn giản).
+
+**9) Kỹ thuật**
+
+* **Chỉ 1 file** `index.html`, **không ảnh ngoài**, **không font ngoài** (dùng stack hệ thống):
+
+  ```
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  ```
+* Dùng **CSS biến** (`:root`) cho màu sắc, radius, shadow.
+* JS thuần: lọc/sắp xếp/tìm kiếm theo mảng sản phẩm; render lại lưới theo tiêu chí.
+* Định dạng tiền tệ: `Intl.NumberFormat('vi-VN', { style:'currency', currency:'VND' })`.
+
+**10) Footer**
+
+* Copyright `© <năm hiện tại> COMPANY_NAME`.
+* Link điều hướng lên đầu trang.
+
+**11) Xuất kết quả**
+
+* Trả về **nội dung hoàn chỉnh của file `index.html`** (HTML + CSS + JS inline, có bình luận ngắn trong code), **không thêm giải thích ngoài code**.
+
+**12) Kiểm thử nhanh**
+
+* Tìm “ThinkPad”/“iPhone” lọc đúng.
+* Sắp xếp giá hoạt động.
+* Bấm **Chi tiết** mở/đóng modal mượt.
+* Nút nổi Zalo/Facebook/Gọi hoạt động (mở URL/tel).
+* Giao diện đẹp trên 360px, 768px, 1280px.
+
+---
+
+> Lưu ý: **Không dùng ảnh/link ngoài**. Ảnh sản phẩm chỉ là **khung màu** hoặc **SVG placeholder** trong code.
+> Mọi thông tin liên hệ lấy từ biến hằng phía trên để dễ chỉnh.

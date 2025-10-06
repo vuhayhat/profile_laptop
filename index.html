@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Cửa hàng laptop & thiết bị di động</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-black: #1a1a1a;
+            --primary-white: #ffffff;
+            --primary-gray: #f5f5f5;
+            --secondary-gray: #666666;
+            --accent-gold: #CBB26A;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-black), var(--secondary-gray));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(203, 178, 106, 0.3);
+            border-top: 4px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--primary-white);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            line-height: 1.6;
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+        }
+
+        /* Animations & Keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: var(--accent-gold); }
+        }
+
+        @keyframes blink-glow {
+            0%, 100% { 
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            }
+            25% { 
+                box-shadow: 0 4px 25px rgba(212, 175, 55, 0.8), 0 0 15px rgba(212, 175, 55, 0.6);
+            }
+            50% { 
+                box-shadow: 0 4px 35px rgba(212, 175, 55, 1), 0 0 25px rgba(212, 175, 55, 0.8);
+            }
+            75% { 
+                box-shadow: 0 4px 25px rgba(212, 175, 55, 0.8), 0 0 15px rgba(212, 175, 55, 0.6);
+            }
+        }
+
+        @keyframes rotate-border {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes contact-blink {
+            0%, 100% { 
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            }
+            50% { 
+                box-shadow: 0 4px 25px rgba(212, 175, 55, 0.7), 0 0 15px rgba(212, 175, 55, 0.5);
+            }
+        }
+
+        @keyframes slideDownHeader {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInNav {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes footerShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes backToTopPulse {
+            0%, 100% { 
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes brandItemPulse {
+            0%, 100% { 
+                transform: translateX(10px) scale(1);
+            }
+            50% { 
+                transform: translateX(10px) scale(1.02);
+            }
+        }
+
+        @keyframes brandItemSlide {
+            0%, 100% { 
+                transform: translateX(10px);
+            }
+            50% { 
+                transform: translateX(15px);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--accent-gold); }
+            50% { box-shadow: 0 0 20px var(--accent-gold), 0 0 30px var(--accent-gold); }
+            100% { box-shadow: 0 0 5px var(--accent-gold); }
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation classes */
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-left {
+            animation: fadeInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-right {
+            animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        .animate-slide-in-bottom {
+            animation: slideInFromBottom 0.6s ease-out forwards;
+        }
+
+        /* Initial hidden state for animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .animate-on-scroll {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all var(--transition);
+            animation: slideDownHeader 0.8s ease-out;
+        }
+
+        .header.scrolled {
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-decoration: none;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(203, 178, 106, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .logo:hover::before {
+            left: 100%;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu li {
+            animation: slideInNav 0.6s ease-out;
+        }
+
+        .nav-menu li:nth-child(1) { animation-delay: 0.1s; }
+        .nav-menu li:nth-child(2) { animation-delay: 0.2s; }
+        .nav-menu li:nth-child(3) { animation-delay: 0.3s; }
+
+        .nav-link {
+            color: var(--primary-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition);
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(203, 178, 106, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-gold), #f4d03f);
+            transition: all var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-gold);
+            transform: translateY(-2px);
+            text-shadow: 0 0 8px rgba(203, 178, 106, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            color: var(--primary-white);
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            margin-top: 70px;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .typing-text {
+            overflow: hidden;
+            border-right: 3px solid var(--accent-gold);
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+            display: inline-block;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-gray) 100%);
+            z-index: -1;
+        }
+
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23CBB26A" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: var(--accent-gold);
+            color: var(--primary-black);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(203, 178, 106, 0.3);
+        }
+
+        /* Brands Section */
+        .brands {
+            padding: 4rem 2rem;
+            background: var(--primary-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary-black);
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .brand-category {
+            background: var(--primary-white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .brand-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(203, 178, 106, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .brand-category:hover::before {
+            left: 100%;
+        }
+
+        .brand-category:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 20px rgba(203, 178, 106, 0.3);
+            border: 2px solid var(--accent-gold);
+        }
+
+        .brand-category:hover .category-title {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 0.5rem;
+        }
+
+        .brand-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .brand-item {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all var(--transition);
+            position: relative;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, transparent, rgba(212, 175, 55, 0.05));
+            overflow: hidden;
+            font-size: 1.1rem;
+            color: var(--secondary-gray);
+        }
+
+        .brand-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-gold), #e6c068);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom;
+        }
+
+        .brand-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .brand-item:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            transform: translateX(10px);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+            color: var(--accent-gold);
+        }
+
+        .brand-item:hover::before {
+            transform: scaleY(1);
+            transform-origin: top;
+        }
+
+        .brand-item:hover::after {
+            left: 100%;
+        }
+
+        .brand-item:last-child {
+            border-bottom: none;
+        }
+
+        .brand-item:nth-child(odd):hover {
+            animation: brandItemPulse 0.6s ease-in-out;
+        }
+
+        .brand-item:nth-child(even):hover {
+            animation: brandItemSlide 0.6s ease-in-out;
+        }
+
+        /* About Section */
+        .about {
+            padding: 4rem 2rem;
+            background: var(--primary-white);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            fill: var(--accent-gold);
+            transition: var(--transition);
+            filter: drop-shadow(0 4px 8px rgba(203, 178, 106, 0.3));
+        }
+
+        .feature:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .feature h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-black);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 4rem 2rem;
+            background: var(--primary-gray);
+        }
+
+        .contact-content {
+            text-align: center;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .contact-info p {
+            margin: 0.8rem 0;
+            font-size: 1.1rem;
+        }
+
+        .contact-info a {
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .contact-info a:hover {
+            text-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+            transform: scale(1.05);
+            display: inline-block;
+        }
+
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--primary-white);
+            color: var(--primary-black);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            animation: contact-blink 3s ease-in-out infinite;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .contact-btn:hover::before {
+            left: 100%;
+        }
+
+        .contact-btn::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(45deg, var(--accent-gold), transparent, var(--accent-gold));
+            z-index: -1;
+            opacity: 0;
+            animation: rotate-border 2s linear infinite;
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-btn:hover::after {
+            opacity: 1;
+        }
+
+        .contact-btn:hover {
+            background: var(--accent-gold);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(203, 178, 106, 0.6);
+            animation: contact-blink 3s ease-in-out infinite, pulse 1s ease-in-out infinite;
+        }
+
+        .contact-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Floating Action Buttons */
+        .floating-buttons {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .floating-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            color: var(--primary-black);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            position: relative;
+            animation: float 3s ease-in-out infinite, blink-glow 2s ease-in-out infinite;
+            overflow: hidden;
+        }
+
+        .btn-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .btn-text {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .floating-btn:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .floating-btn:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        .floating-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-gold), transparent, var(--accent-gold));
+            z-index: -1;
+            animation: rotate-border 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .floating-btn:hover::before {
+            opacity: 1;
+        }
+
+        .floating-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
+        }
+
+        .floating-btn:active::after {
+            width: 120px;
+            height: 120px;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.2) rotate(10deg);
+            box-shadow: 0 12px 25px rgba(203, 178, 106, 0.5);
+            animation: pulse 0.6s ease-in-out infinite, blink-glow 2s ease-in-out infinite;
+        }
+
+        .floating-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .tooltip {
+            position: absolute;
+            right: 70px;
+            background: var(--primary-black);
+            color: var(--primary-white);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .floating-btn:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-black), var(--secondary-gray));
+            color: var(--primary-white);
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            animation: footerShine 3s ease-in-out infinite;
+        }
+
+        .footer p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+            transition: all var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer p:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+            text-shadow: 0 2px 8px rgba(203, 178, 106, 0.3);
+        }
+
+        .footer::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            opacity: 0.5;
+        }
+
+        @keyframes footerShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .back-to-top {
+            color: var(--accent-gold);
+            text-decoration: none;
+            margin-top: 1rem;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .back-to-top:hover {
+            color: var(--primary-white);
+        }
+
+        /* Back to top button */
+        #backToTop {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--accent-gold), #e6c068);
+            color: var(--primary-black);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition);
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #backToTop::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        #backToTop::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--accent-gold), #e6c068, var(--accent-gold));
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #backToTop.show {
+            opacity: 1;
+            visibility: visible;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        #backToTop:hover {
+            background: linear-gradient(135deg, #e6c068, var(--accent-gold));
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        #backToTop:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        #backToTop:hover::after {
+            opacity: 1;
+            animation: rotate-border 1s linear infinite;
+        }
+
+        #backToTop:active {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .floating-buttons {
+                bottom: 1rem;
+                right: 1rem;
+                flex-direction: row;
+                background: var(--primary-white);
+                padding: 1rem;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+            }
+
+            .floating-btn {
+                position: static;
+                width: 50px;
+                height: 50px;
+            }
+
+            .tooltip {
+                display: none;
+            }
+
+            .contact-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .cta-button:focus,
+        .contact-btn:focus,
+        .floating-btn:focus,
+        .nav-link:focus {
+            outline: 2px solid var(--accent-gold);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">TechStore</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent" style="opacity: 0; transition: opacity 0.5s ease;">
+        <!-- Header -->
+        <header class="header">
+            <nav class="nav">
+                <div class="logo">TechStore</div>
+                <ul class="nav-menu">
+                    <li><a href="#brands" class="nav-link">Sản phẩm</a></li>
+                    <li><a href="#about" class="nav-link">Về chúng tôi</a></li>
+                    <li><a href="#contact" class="nav-link">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-content animate-on-scroll">
+            <h1><span class="typing-text">Cửa hàng laptop & thiết bị di động</span></h1>
+            <p class="animate-fade-in-up" style="animation-delay: 3.5s; opacity: 0;">Chuyên cung cấp các sản phẩm công nghệ chính hãng từ những thương hiệu hàng đầu thế giới với giá cả cạnh tranh và dịch vụ tận tâm.</p>
+            <a href="#brands" class="cta-button animate-slide-in-bottom" style="animation-delay: 4s; opacity: 0;">Xem sản phẩm</a>
+        </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section id="brands" class="brands">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">Các thương hiệu chúng tôi phân phối</h2>
+            <div class="brands-grid">
+                <div class="brand-category animate-on-scroll" style="animation-delay: 0.2s;">
+                    <h3 class="category-title">Laptop</h3>
+                    <ul class="brand-list">
+                        <li class="brand-item">Apple MacBook (Air, Pro)</li>
+                        <li class="brand-item">Dell (XPS, Inspiron, Latitude)</li>
+                        <li class="brand-item">HP (Pavilion, Envy, EliteBook)</li>
+                        <li class="brand-item">Lenovo (ThinkPad, IdeaPad, Legion)</li>
+                        <li class="brand-item">ASUS (ZenBook, VivoBook, ROG)</li>
+                        <li class="brand-item">Acer (Aspire, Swift, Predator)</li>
+                        <li class="brand-item">MSI (Gaming, Creator, Business)</li>
+                    </ul>
+                </div>
+
+                <div class="brand-category animate-on-scroll" style="animation-delay: 0.4s;">
+                    <h3 class="category-title">Điện thoại</h3>
+                    <ul class="brand-list">
+                        <li class="brand-item">Apple iPhone (14, 15 series)</li>
+                        <li class="brand-item">Samsung Galaxy (S, Note, A series)</li>
+                        <li class="brand-item">Xiaomi (Mi, Redmi, POCO)</li>
+                        <li class="brand-item">OPPO (Find, Reno, A series)</li>
+                        <li class="brand-item">Vivo (V, Y, X series)</li>
+                        <li class="brand-item">Realme (GT, Number series)</li>
+                        <li class="brand-item">OnePlus (Flagship, Nord)</li>
+                    </ul>
+                </div>
+
+                <div class="brand-category animate-on-scroll" style="animation-delay: 0.6s;">
+                    <h3 class="category-title">Tablet & iPad</h3>
+                    <ul class="brand-list">
+                        <li class="brand-item">Apple iPad (Air, Pro, Mini)</li>
+                        <li class="brand-item">Samsung Galaxy Tab (S, A series)</li>
+                        <li class="brand-item">Xiaomi Pad (Mi Pad series)</li>
+                        <li class="brand-item">Lenovo Tab (P, M series)</li>
+                        <li class="brand-item">Huawei MatePad</li>
+                        <li class="brand-item">Microsoft Surface</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">Tại sao chọn chúng tôi?</h2>
+            <div class="about-content">
+                <div class="feature animate-on-scroll" style="animation-delay: 0.1s;">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <h3>Bảo hành chính hãng</h3>
+                    <p>Tất cả sản phẩm đều có bảo hành chính hãng từ nhà sản xuất, hỗ trợ kỹ thuật 24/7</p>
+                </div>
+                <div class="feature animate-on-scroll" style="animation-delay: 0.2s;">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <h3>Đổi trả linh hoạt</h3>
+                    <p>Chính sách đổi trả trong 15 ngày, hỗ trợ đổi sang sản phẩm khác nếu không hài lòng</p>
+                </div>
+                <div class="feature animate-on-scroll" style="animation-delay: 0.3s;">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5s-.96.06-1.42.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8z"/>
+                    </svg>
+                    <h3>Giao hàng nhanh</h3>
+                    <p>Giao hàng miễn phí trong nội thành, hỗ trợ giao hàng toàn quốc với thời gian nhanh nhất</p>
+                </div>
+                <div class="feature animate-on-scroll" style="animation-delay: 0.4s;">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                    <h3>Hỗ trợ kỹ thuật IT</h3>
+                    <p>Đội ngũ kỹ thuật viên chuyên nghiệp, hỗ trợ cài đặt, sửa chữa và tư vấn sử dụng</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">Liên hệ với chúng tôi</h2>
+            <div class="contact-content animate-on-scroll">
+                <p>Hãy liên hệ với chúng tôi để được tư vấn và báo giá tốt nhất!</p>
+                <div class="contact-info">
+                    <p><strong>📞 Hotline:</strong> <a href="tel:0825280204" style="color: var(--accent-color); text-decoration: none;">0825280204</a></p>
+                    <p><strong>💬 Zalo:</strong> <a href="https://zalo.me/0825280204" style="color: var(--accent-color); text-decoration: none;">0825280204</a></p>
+                </div>
+                <div class="contact-buttons">
+                    <a href="#" class="contact-btn zalo-btn" data-contact="zalo">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.54 0 3-.35 4.31-.99L22 22l-1.01-5.69C21.65 15 22 13.54 22 12c0-5.52-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                            <circle cx="9" cy="12" r="1"/>
+                            <circle cx="15" cy="12" r="1"/>
+                            <path d="M12 17.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                        </svg>
+                        Chat Zalo
+                    </a>
+                    <a href="#" class="contact-btn facebook" data-contact="facebook">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                    </a>
+                    <a href="#" class="contact-btn phone" data-contact="phone">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                        Gọi điện
+                    </a>
+                </div>
+                <p><strong>Địa chỉ:</strong> <span id="address-display"></span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Action Buttons -->
+    <div class="floating-buttons">
+        <a href="#" class="floating-btn zalo" data-contact="zalo" aria-label="Liên hệ Zalo">
+            <div class="btn-content">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3.04 1.05 4.36L2 22l5.64-1.05C9.96 21.64 11.46 22 13 22h-1c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.31 0-2.59-.31-3.71-.88L7 19.5l.38-1.29C6.69 17.09 6.5 16.06 6.5 15c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5-2.46 5.5-5.5 5.5z"/>
+                    <circle cx="9" cy="15" r="1"/>
+                    <circle cx="12" cy="15" r="1"/>
+                    <circle cx="15" cy="15" r="1"/>
+                </svg>
+                <span class="btn-text">Zalo</span>
+            </div>
+        </a>
+        <a href="#" class="floating-btn facebook" data-contact="facebook" aria-label="Liên hệ Facebook">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+        </a>
+        <a href="#" class="floating-btn phone" data-contact="phone" aria-label="Gọi điện">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> <span id="company-display"></span>. Tất cả quyền được bảo lưu.</p>
+            <a href="#" class="back-to-top">↑ Về đầu trang</a>
+        </div>
+    </footer>
+
+        <!-- Back to Top Button -->
+        <button id="backToTop" class="back-to-top" aria-label="Về đầu trang">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+            </svg>
+        </button>
+    </div> <!-- End Main Content -->
+
+    <script>
+        // Configuration constants
+        const COMPANY_NAME = "TechStore Pro";
+        const PHONE_NUMBER = "0825280204";
+        const ZALO_LINK = "https://zalo.me/0825280204";
+        const FACEBOOK_LINK = "https://facebook.com/techstore.pro";
+        const ADDRESS = "123 Nguyễn Văn Linh, Phường Tân Phong, Quận 7, TP.HCM";
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Set company name and address
+            document.getElementById('company-display').textContent = COMPANY_NAME;
+            document.getElementById('address-display').textContent = ADDRESS;
+
+            // Set up contact links
+            setupContactLinks();
+            
+            // Smooth scrolling for navigation
+            setupSmoothScrolling();
+            
+            // Back to top functionality
+            setupBackToTop();
+        });
+
+        function handleContactClick(type) {
+            let url;
+            switch(type) {
+                case 'zalo':
+                    url = ZALO_LINK;
+                    break;
+                case 'facebook':
+                    url = FACEBOOK_LINK;
+                    break;
+                case 'phone':
+                    url = `tel:${PHONE_NUMBER}`;
+                    break;
+                default:
+                    return;
+            }
+            
+            // Open the URL
+            window.open(url, '_blank');
+            
+            // Log for tracking
+            console.log(`Contact clicked: ${type} - ${url}`);
+        }
+
+        function setupContactLinks() {
+            // Set up data attributes for buttons that use onclick
+            const buttons = document.querySelectorAll('[data-contact]');
+            buttons.forEach(button => {
+                const contactType = button.getAttribute('data-contact');
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    handleContactClick(contactType);
+                });
+            });
+
+            // Add click tracking
+            addClickTracking();
+        }
+
+        function addClickTracking() {
+            const contactButtons = document.querySelectorAll('[id*="zalo"], [id*="facebook"], [id*="phone"]');
+            
+            contactButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const buttonType = this.id.includes('zalo') ? 'Zalo' : 
+                                     this.id.includes('facebook') ? 'Facebook' : 'Phone';
+                    
+                    console.log(`Contact tracking: User clicked ${buttonType} button`);
+                    console.log(`Timestamp: ${new Date().toISOString()}`);
+                    console.log(`Button ID: ${this.id}`);
+                    console.log(`Target URL: ${this.href}`);
+                });
+            });
+        }
+
+        function setupSmoothScrolling() {
+            const navLinks = document.querySelectorAll('a[href^="#"]');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        const headerHeight = document.querySelector('.header').offsetHeight;
+                        const targetPosition = targetElement.offsetTop - headerHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        function setupBackToTop() {
+            const backToTopLink = document.querySelector('.back-to-top');
+            
+            backToTopLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to brand categories
+            const brandCategories = document.querySelectorAll('.brand-category');
+            
+            brandCategories.forEach(category => {
+                category.addEventListener('mouseenter', function() {
+                    this.style.borderLeft = '4px solid var(--accent-gold)';
+                });
+                
+                category.addEventListener('mouseleave', function() {
+                    this.style.borderLeft = 'none';
+                });
+            });
+
+            // Add scroll effect to floating buttons
+            let lastScrollTop = 0;
+            const floatingButtons = document.querySelector('.floating-buttons');
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > lastScrollTop && scrollTop > 200) {
+                    // Scrolling down
+                    floatingButtons.style.transform = 'translateY(0)';
+                    floatingButtons.style.opacity = '1';
+                } else if (scrollTop < 100) {
+                    // Near top
+                    floatingButtons.style.opacity = '0.7';
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+        });
+
+        // Add keyboard navigation support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Close any open modals or menus (for future expansion)
+                console.log('Escape key pressed');
+            }
+        });
+
+        // Performance optimization: Lazy loading simulation
+        function optimizePerformance() {
+            // Simulate lazy loading for images (if we had any)
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '50px'
+            };
+
+            // This would be used for actual images in a real implementation
+            if ('IntersectionObserver' in window) {
+                console.log('Intersection Observer supported - ready for lazy loading');
+            }
+        }
+
+        // Initialize performance optimizations
+        document.addEventListener('DOMContentLoaded', optimizePerformance);
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in-up');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements with animate-on-scroll class
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Parallax effect for hero background
+        const heroBackground = document.querySelector('.hero-background');
+        if (heroBackground) {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const parallax = scrolled * 0.5;
+                heroBackground.style.transform = `translateY(${parallax}px)`;
+            });
+        }
+
+        // Loading screen and page transitions
+        window.addEventListener('load', () => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                mainContent.style.opacity = '1';
+                
+                // Remove loading screen from DOM after transition
+                setTimeout(() => {
+                    loadingScreen.remove();
+                }, 500);
+            }, 1000); // Show loading for 1 second minimum
+        });
+    </script>
+</body>
+</html>
