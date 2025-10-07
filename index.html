@@ -19,11 +19,18 @@
             --glass-border: rgba(255, 255, 255, 0.2);
         }
 
-        /* Reset & Base Styles */
+        /* Global Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+        
+        /* Mobile Touch Optimization */
+        html {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         body {
@@ -194,6 +201,11 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            min-height: 44px; /* Touch-friendly minimum */
+            min-width: 44px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .cta-button::before {
@@ -501,6 +513,11 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            min-height: 44px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .contact-btn::before {
@@ -523,7 +540,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .phone-btn:hover {
+        .zalo-personal-btn:hover {
             border-color: var(--accent-cyan);
             box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
         }
@@ -694,7 +711,7 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
-        .sub-btn.phone-btn:hover {
+        .sub-btn.zalo-personal-btn:hover {
             border-color: var(--accent-cyan);
             background: linear-gradient(135deg, var(--glass-bg), rgba(0, 255, 255, 0.1));
             box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
@@ -740,41 +757,150 @@
             color: var(--text-gray);
         }
 
-        /* Responsive Design */
+        /* Mobile-First Responsive Design */
         @media (max-width: 768px) {
+            /* Navigation */
             .nav-links {
                 display: none;
             }
             
-            .hero h1 {
-                font-size: 3rem;
+            /* Hero Section - Mobile Optimized */
+            .hero {
+                padding: 4rem 0 3rem;
+                min-height: 70vh;
             }
             
+            .hero h1 {
+                font-size: 2.5rem;
+                line-height: 1.2;
+                margin-bottom: 1rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+                padding: 0 1rem;
+            }
+            
+            /* Brands Grid - Single Column */
             .brands-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 1rem;
             }
             
+            .brand-category {
+                padding: 1.5rem;
+                min-height: auto;
+            }
+            
+            /* About Section */
             .about-content {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            /* Contact Section - Mobile Friendly */
+            .contact {
+                padding: 3rem 0;
+            }
+            
+            .contact-info {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .contact-item {
+                padding: 1.5rem;
+                text-align: center;
             }
             
             .contact-buttons {
                 grid-template-columns: 1fr;
                 gap: 1rem;
+                max-width: 300px;
+                margin: 0 auto;
             }
             
             .contact-btn {
-                padding: 1rem 1.5rem;
-                font-size: 0.9rem;
+                padding: 1.2rem 1.5rem;
+                font-size: 1rem;
+                min-height: 60px;
+                justify-content: center;
             }
             
             .btn-text {
-                font-size: 0.9rem;
+                font-size: 1rem;
+                font-weight: 600;
             }
             
+            /* Floating Contact Menu - Touch Optimized */
             .floating-contact-menu {
                 right: 15px;
                 bottom: 20px;
+            }
+            
+            .main-contact-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 0.7rem;
+            }
+            
+            .main-contact-btn .btn-icon {
+                font-size: 1.5rem;
+            }
+            
+            .main-contact-btn .btn-text {
+                font-size: 0.65rem;
+                margin-top: 2px;
+            }
+            
+            .sub-btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+                min-width: 50px;
+                min-height: 50px;
+            }
+            
+            .sub-btn .btn-icon {
+                font-size: 1.3rem;
+            }
+            
+            .sub-btn .btn-label {
+                display: none;
+            }
+            
+            /* Container Padding */
+            .container {
+                padding: 0 1rem;
+            }
+            
+            /* Section Titles */
+            .section-title {
+                font-size: 2.5rem;
+                margin-bottom: 2rem;
+            }
+        }
+        
+        /* Extra Small Devices */
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 0.9rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .floating-contact-menu {
+                right: 10px;
+                bottom: 15px;
             }
             
             .main-contact-btn {
@@ -782,21 +908,9 @@
                 height: 60px;
             }
             
-            .main-contact-btn .btn-icon {
-                font-size: 1.4rem;
-            }
-            
-            .main-contact-btn .btn-text {
-                font-size: 0.6rem;
-            }
-            
-            .sub-btn {
-                padding: 10px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .sub-btn .btn-label {
-                display: none;
+            .contact-btn {
+                padding: 1rem;
+                font-size: 0.9rem;
             }
         }
 
@@ -970,9 +1084,9 @@
         
         <!-- Sub Contact Buttons -->
         <div class="sub-contact-buttons" id="subContactButtons">
-            <a href="tel:0825280204" class="sub-btn phone-btn" title="Gọi ngay">
-                <span class="btn-icon">📞</span>
-                <span class="btn-label">Gọi ngay</span>
+            <a href="https://zalo.me/0825280204" class="sub-btn zalo-personal-btn" target="_blank" title="Zalo cá nhân">
+                <span class="btn-icon">📱</span>
+                <span class="btn-label">Zalo cá nhân</span>
             </a>
             <a href="mailto:vucv180204@gmail.com" class="sub-btn email-btn" title="Gửi Email">
                 <span class="btn-icon">✉️</span>
@@ -1003,7 +1117,7 @@
                     <p>Trần Hưng Đạo<br>Đồng Hới</p>
                 </div>
                 <div class="contact-item fade-in">
-                    <h3>📞 Điện thoại</h3>
+                    <h3>📱 Zalo</h3>
                     <p>0825 280 204</p>
                 </div>
                 <div class="contact-item fade-in">
@@ -1014,19 +1128,19 @@
             
             <!-- Contact Buttons -->
             <div class="contact-buttons fade-in">
-                <a href="tel:0825280204" class="contact-btn phone-btn">
-                    <span class="btn-icon">📞</span>
-                    <span class="btn-text">Gọi ngay</span>
+                <a href="https://zalo.me/0825280204" class="contact-btn zalo-personal-btn" target="_blank">
+                    <span class="btn-icon">📱</span>
+                    <span class="btn-text">Zalo cá nhân</span>
                 </a>
                 <a href="mailto:vucv180204@gmail.com" class="contact-btn email-btn">
                     <span class="btn-icon">✉️</span>
                     <span class="btn-text">Gửi Email</span>
                 </a>
-                <a href="https://zalo.me/0825280204" class="contact-btn zalo-btn" target="_blank">
+                <a href="https://zalo.me/g/kvzxey160" class="contact-btn zalo-btn" target="_blank">
                     <span class="btn-icon">💬</span>
-                    <span class="btn-text">Chat Zalo</span>
+                    <span class="btn-text">Nhóm Zalo</span>
                 </a>
-                <a href="https://www.facebook.com/oklap.community" class="contact-btn community-btn" target="_blank">
+                <a href="https://zalo.me/g/kvzxey160" class="contact-btn community-btn" target="_blank">
                     <span class="btn-icon">🖥️</span>
                     <span class="btn-text">Cộng đồng máy tính oklap</span>
                 </a>
