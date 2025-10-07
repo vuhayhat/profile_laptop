@@ -1224,6 +1224,16 @@
         // Mobile Detection
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
+        // Performance Mode Detection (for low-end devices)
+        const isLowEndDevice = isMobile && (
+            navigator.hardwareConcurrency <= 2 || // 2 cores or less
+            navigator.deviceMemory <= 2 || // 2GB RAM or less
+            /Android.*[4-6]\./i.test(navigator.userAgent) // Old Android versions
+        );
+        
+        // Performance settings
+        const performanceMode = isLowEndDevice ? 'low' : (isMobile ? 'medium' : 'high');
+        
         // Mobile-Optimized Loading Animation
         window.addEventListener('load', () => {
             const loading = document.getElementById('loading');
@@ -1585,7 +1595,7 @@
                   z-index: 9998;
                   border-radius: 50% 30% 60% 40%;
                   opacity: 0.8;
-                  filter: blur(1px);
+                  filter: blur(0.5px);
                   mix-blend-mode: screen;
               }
               
@@ -1595,7 +1605,7 @@
                   z-index: 9997;
                   border-radius: 60% 40% 50% 70%;
                   opacity: 0.7;
-                  filter: blur(2px);
+                  filter: blur(1px);
                   mix-blend-mode: color-dodge;
               }
               
@@ -1603,27 +1613,27 @@
                   0% {
                       opacity: 0.8;
                       transform: scale(1) rotate(0deg) skewX(0deg);
-                      filter: blur(1px) hue-rotate(0deg);
+                      filter: blur(0.5px) hue-rotate(0deg);
                   }
                   25% {
                       opacity: 0.9;
                       transform: scale(1.3) rotate(90deg) skewX(10deg);
-                      filter: blur(1.5px) hue-rotate(60deg);
+                      filter: blur(0.5px) hue-rotate(60deg);
                   }
                   50% {
                       opacity: 0.7;
                       transform: scale(1.6) rotate(180deg) skewX(-5deg);
-                      filter: blur(2px) hue-rotate(120deg);
+                      filter: blur(1px) hue-rotate(120deg);
                   }
                   75% {
                       opacity: 0.8;
                       transform: scale(1.2) rotate(270deg) skewX(15deg);
-                      filter: blur(1.8px) hue-rotate(180deg);
+                      filter: blur(0.5px) hue-rotate(180deg);
                   }
                   100% {
                       opacity: 0;
                       transform: scale(0.5) rotate(360deg) skewX(0deg);
-                      filter: blur(3px) hue-rotate(240deg);
+                      filter: blur(1px) hue-rotate(240deg);
                   }
               }
               
@@ -1631,22 +1641,22 @@
                   0% {
                       opacity: 0.7;
                       transform: scale(0.5) rotate(0deg);
-                      filter: blur(2px) brightness(1.2);
+                      filter: blur(1px) brightness(1.2);
                   }
                   30% {
                       opacity: 0.9;
                       transform: scale(2) rotate(120deg);
-                      filter: blur(3px) brightness(1.5);
+                      filter: blur(1.5px) brightness(1.5);
                   }
                   60% {
                       opacity: 0.6;
                       transform: scale(3.5) rotate(240deg);
-                      filter: blur(4px) brightness(1.1);
+                      filter: blur(2px) brightness(1.1);
                   }
                   100% {
                       opacity: 0;
                       transform: scale(5) rotate(360deg);
-                      filter: blur(6px) brightness(0.8);
+                      filter: blur(2.5px) brightness(0.8);
                   }
               }
               
@@ -1654,22 +1664,22 @@
                    0% {
                        opacity: 0.7;
                        transform: scale(1) translate(0, 0) rotate(0deg);
-                       filter: blur(2px);
+                       filter: blur(1px);
                    }
                    40% {
                        opacity: 0.9;
                        transform: scale(2.5) translate(calc(var(--target-x) * 0.2), calc(var(--target-y) * 0.2)) rotate(180deg);
-                       filter: blur(3px);
+                       filter: blur(1.5px);
                    }
                    70% {
                        opacity: 0.8;
                        transform: scale(1.8) translate(calc(var(--target-x) * 0.6), calc(var(--target-y) * 0.6)) rotate(270deg);
-                       filter: blur(2px);
+                       filter: blur(1px);
                    }
                    100% {
                        opacity: 0;
                        transform: scale(0.2) translate(var(--target-x), var(--target-y)) rotate(360deg);
-                       filter: blur(1px);
+                       filter: blur(0.5px);
                    }
                }
                
@@ -1812,13 +1822,15 @@
           
           function createStarTrail(x, y) {
                const now = Date.now();
-               if (now - lastTouchTime < 30) return; // Optimized throttle for smoother trail
+               // Dynamic throttling based on performance mode
+               const throttleDelay = performanceMode === 'low' ? 100 : (performanceMode === 'medium' ? 60 : 30);
+               if (now - lastTouchTime < throttleDelay) return;
                
                lastTouchTime = now;
                
-               // Performance optimization: limit particles based on device capability
-               const maxParticles = isMobile ? 2 : 4;
-               const particleDelay = isMobile ? 80 : 50;
+               // Performance optimization: adaptive particles based on device capability
+               const maxParticles = performanceMode === 'low' ? 1 : (performanceMode === 'medium' ? 1 : 2);
+               const particleDelay = performanceMode === 'low' ? 150 : (performanceMode === 'medium' ? 120 : 80);
                
                // Create multiple particles for richer effect with velocity-based spacing
                const velocity = touchTrail.length > 1 ? 
@@ -1839,24 +1851,24 @@
                        
                        createStarParticle(x + offsetX, y + offsetY, null, null, size, intensity);
                        
-                       // Add premium effects based on velocity
-                       if (velocity > 30) {
-                           // High velocity: Aurora Borealis effect
-                           if (Math.random() < 0.7) {
+                       // Add premium effects based on velocity (optimized for performance)
+                       if (velocity > 60) {
+                           // High velocity: Aurora Borealis effect (reduced probability)
+                           if (Math.random() < 0.3) {
                                createAuroraTrail(x + offsetX * 1.5, y + offsetY * 1.5, velocity);
                            }
                        }
                        
-                       if (velocity > 50) {
-                           // Very high velocity: Nebula particles
-                           if (Math.random() < 0.4) {
+                       if (velocity > 100) {
+                           // Very high velocity: Nebula particles (reduced probability)
+                           if (Math.random() < 0.15) {
                                createNebulaParticle(x + offsetX * 2, y + offsetY * 2, null, null, velocity);
                            }
                        }
                        
-                       if (velocity > 70) {
-                           // Extreme velocity: Lightning Trail effect
-                           if (Math.random() < 0.3) {
+                       if (velocity > 150) {
+                           // Extreme velocity: Lightning Trail effect (reduced probability)
+                           if (Math.random() < 0.1) {
                                createLightningTrail(x + offsetX * 0.8, y + offsetY * 0.8, velocity);
                            }
                        }
