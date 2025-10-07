@@ -869,18 +869,27 @@
             }
             
             .sub-btn {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-                min-width: 50px;
-                min-height: 50px;
+                padding: 10px 12px;
+                font-size: 0.8rem;
+                min-width: 120px;
+                min-height: 44px;
+                flex-direction: row;
+                gap: 8px;
+                justify-content: flex-start;
             }
             
             .sub-btn .btn-icon {
-                font-size: 1.3rem;
+                font-size: 1.1rem;
+                flex-shrink: 0;
             }
             
             .sub-btn .btn-label {
-                display: none;
+                display: block;
+                font-size: 0.75rem;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             
             /* Container Padding */
@@ -897,6 +906,15 @@
         
         /* Extra Small Devices */
         @media (max-width: 480px) {
+            .sub-btn {
+                min-width: 100px;
+                padding: 8px 10px;
+            }
+            
+            .sub-btn .btn-label {
+                font-size: 0.7rem;
+            }
+            
             .hero h1 {
                 font-size: 2rem;
             }
@@ -984,7 +1002,7 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav">
-            <a href="#" class="logo">TechStore</a>
+            <a href="#" class="logo">Oklap</a>
             <ul class="nav-links">
                 <li><a href="#home">Trang chủ</a></li>
                 <li><a href="#brands">Sản phẩm</a></li>
@@ -1162,7 +1180,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 TechStore. Tất cả quyền được bảo lưu.</p>
+            <p>&copy; 2025 Oklap.vn. Tất cả quyền được bảo lưu.</p>
         </div>
     </footer>
 
