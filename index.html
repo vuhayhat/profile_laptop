@@ -1640,79 +1640,62 @@
           
           function createStarTrail(x, y) {
                const now = Date.now();
-               if (now - lastTouchTime < 30) return; // Optimized throttle for smoother trail
+               if (now - lastTouchTime < 50) return; // Increased throttle for smoother performance
                
                lastTouchTime = now;
                
-               // Performance optimization: limit particles based on device capability
-               const maxParticles = isMobile ? 2 : 4;
-               const particleDelay = isMobile ? 80 : 50;
+               // Reduced particles for smoother experience
+               const maxParticles = isMobile ? 1 : 2; // Reduced from 2:4 to 1:2
+               const particleDelay = isMobile ? 100 : 80; // Increased delay
                
-               // Create multiple particles for richer effect with velocity-based spacing
+               // Simplified velocity calculation
                const velocity = touchTrail.length > 1 ? 
                    Math.sqrt(Math.pow(x - touchTrail[touchTrail.length - 1].x, 2) + 
                             Math.pow(y - touchTrail[touchTrail.length - 1].y, 2)) : 0;
                
-               const numParticles = Math.min(maxParticles, Math.max(1, Math.floor(velocity / 10)));
+               // Further reduced particle count
+               const numParticles = Math.min(maxParticles, Math.max(1, Math.floor(velocity / 20)));
                
                for (let i = 0; i < numParticles; i++) {
                    setTimeout(() => {
-                       const offsetX = (Math.random() - 0.5) * 25;
-                       const offsetY = (Math.random() - 0.5) * 25;
+                       // Reduced randomness for cleaner trail
+                       const offsetX = (Math.random() - 0.5) * 15;
+                       const offsetY = (Math.random() - 0.5) * 15;
                        
-                       // Add velocity-based effects
-                       const velocityFactor = Math.min(velocity / 50, 2);
-                       const size = 2 + velocityFactor;
-                       const intensity = 0.5 + (velocityFactor * 0.5);
+                       // Simplified effects
+                       const velocityFactor = Math.min(velocity / 60, 1.5);
+                       const size = 2 + (velocityFactor * 0.8);
+                       const intensity = 0.6 + (velocityFactor * 0.4);
                        
                        createStarParticle(x + offsetX, y + offsetY, null, null, size, intensity);
                    }, i * particleDelay);
                }
                
-               // Store trail position with velocity
+               // Store trail position
                touchTrail.push({ x, y, time: now, velocity });
                
-               // Keep only recent trail points (optimized cleanup)
-               if (touchTrail.length > 20) {
-                   touchTrail = touchTrail.filter(point => now - point.time < 800);
+               // More aggressive cleanup for performance
+               if (touchTrail.length > 15) {
+                   touchTrail = touchTrail.filter(point => now - point.time < 600);
                }
            }
           
           function createConvergeEffect(centerX, centerY) {
-               // Create multiple converge patterns for galaxy effect
-               const patterns = [
-                   { numStars: 8, radius: 80, delay: 0 },
-                   { numStars: 12, radius: 120, delay: 300 },
-                   { numStars: 16, radius: 160, delay: 600 }
-               ];
+               // Simplified converge effect for better performance
+               const isMobile = window.innerWidth <= 768;
+               const numStars = isMobile ? 6 : 10; // Reduced from complex patterns
+               const radius = isMobile ? 60 : 100; // Smaller radius
                
-               patterns.forEach((pattern, patternIndex) => {
+               // Single simple pattern instead of multiple complex ones
+               for (let i = 0; i < numStars; i++) {
+                   const angle = (i / numStars) * Math.PI * 2;
+                   const startX = centerX + Math.cos(angle) * radius;
+                   const startY = centerY + Math.sin(angle) * radius;
+                   
                    setTimeout(() => {
-                       for (let i = 0; i < pattern.numStars; i++) {
-                           const angle = (i / pattern.numStars) * Math.PI * 2;
-                           const startX = centerX + Math.cos(angle) * pattern.radius;
-                           const startY = centerY + Math.sin(angle) * pattern.radius;
-                           
-                           setTimeout(() => {
-                               createStarParticle(startX, startY, centerX, centerY);
-                           }, i * 50);
-                       }
-                   }, pattern.delay);
-               });
-               
-               // Add spiral effect
-               setTimeout(() => {
-                   for (let i = 0; i < 20; i++) {
-                       const angle = (i / 20) * Math.PI * 4; // 2 full rotations
-                       const radius = 200 - (i * 8); // Spiral inward
-                       const startX = centerX + Math.cos(angle) * radius;
-                       const startY = centerY + Math.sin(angle) * radius;
-                       
-                       setTimeout(() => {
-                           createStarParticle(startX, startY, centerX, centerY);
-                       }, i * 80);
-                   }
-               }, 1000);
+                       createStarParticle(startX, startY, centerX, centerY);
+                   }, i * 80); // Increased delay for smoother effect
+               }
            }
 
         // Global touch events for star trail effect (Mobile only)
