@@ -293,9 +293,20 @@
             opacity: 1;
         }
 
-        .brand-category:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+        /* Desktop hover effects */
+        @media (hover: hover) and (pointer: fine) {
+            .brand-category:hover {
+                transform: translateY(-10px) scale(1.05);
+                box-shadow: 0 20px 40px rgba(0, 255, 255, 0.3);
+            }
+        }
+        
+        /* Mobile touch effects */
+        @media (hover: none) and (pointer: coarse) {
+            .brand-category:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
         }
 
         @keyframes borderGlow {
@@ -1156,31 +1167,51 @@
     </footer>
 
     <script>
-        // Loading Animation
+        // Mobile Detection
+        const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // Mobile-Optimized Loading Animation
         window.addEventListener('load', () => {
             const loading = document.getElementById('loading');
+            // Faster loading on mobile for better UX
+            const loadingDelay = isMobile ? 500 : 1000;
             setTimeout(() => {
                 loading.classList.add('hidden');
-            }, 1000);
+            }, loadingDelay);
         });
 
-        // Scroll Animations
+        // Mobile-Optimized Scroll Animations
         const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: isMobile ? 0.05 : 0.1, // Lower threshold for mobile
+            rootMargin: isMobile ? '0px 0px -20px 0px' : '0px 0px -50px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                    // Unobserve on mobile to improve performance
+                    if (isMobile) {
+                        observer.unobserve(entry.target);
+                    }
                 }
             });
         }, observerOptions);
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
+        // Reduce observed elements on mobile
+        const fadeElements = document.querySelectorAll('.fade-in');
+        if (isMobile) {
+            // Only observe every other element on mobile
+            fadeElements.forEach((el, index) => {
+                if (index % 2 === 0 || el.closest('.contact, .hero')) {
+                    observer.observe(el);
+                } else {
+                    el.classList.add('visible'); // Show immediately
+                }
+            });
+        } else {
+            fadeElements.forEach(el => observer.observe(el));
+        }
 
         // Smooth Scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1206,22 +1237,50 @@
             }
         });
 
-        // Brand Category Hover Effects
+        // Touch-Friendly Brand Category Interactions
         document.querySelectorAll('.brand-category').forEach(category => {
-            category.addEventListener('mouseenter', () => {
-                category.style.transform = 'translateY(-10px) scale(1.02) rotateX(5deg)';
+            // For desktop - keep hover effects
+            if (!isMobile) {
+                category.addEventListener('mouseenter', () => {
+                    category.style.transform = 'translateY(-10px) scale(1.02) rotateX(5deg)';
+                });
+                
+                category.addEventListener('mouseleave', () => {
+                    category.style.transform = 'translateY(0) scale(1) rotateX(0deg)';
+                });
+            }
+            
+            // For mobile - touch interactions
+            category.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                category.style.transform = 'scale(0.98)';
+                category.style.transition = 'transform 0.1s ease';
             });
             
-            category.addEventListener('mouseleave', () => {
-                category.style.transform = 'translateY(0) scale(1) rotateX(0deg)';
+            category.addEventListener('touchend', () => {
+                category.style.transform = 'scale(1)';
+                setTimeout(() => {
+                    category.style.transition = 'all 0.3s ease';
+                }, 100);
+            });
+            
+            // Click/tap effect for both
+            category.addEventListener('click', () => {
+                category.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    category.style.transform = isMobile ? 'scale(1)' : 'translateY(0) scale(1) rotateX(0deg)';
+                }, 150);
             });
         });
 
-        // Dynamic Particle Generation
+        // Mobile-Optimized Particle Generation
         function createParticle() {
+            // Reduce particles on mobile for performance
+            if (isMobile && Math.random() > 0.3) return;
+            
             const particle = document.createElement('div');
             particle.style.position = 'fixed';
-            particle.style.width = Math.random() * 4 + 'px';
+            particle.style.width = (isMobile ? Math.random() * 2 + 1 : Math.random() * 4) + 'px';
             particle.style.height = particle.style.width;
             particle.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
             particle.style.borderRadius = '50%';
@@ -1229,30 +1288,32 @@
             particle.style.top = window.innerHeight + 'px';
             particle.style.pointerEvents = 'none';
             particle.style.zIndex = '-1';
-            particle.style.opacity = '0.7';
+            particle.style.opacity = isMobile ? '0.4' : '0.7';
             
             document.body.appendChild(particle);
             
             const animation = particle.animate([
-                { transform: 'translateY(0px)', opacity: 0.7 },
+                { transform: 'translateY(0px)', opacity: isMobile ? 0.4 : 0.7 },
                 { transform: `translateY(-${window.innerHeight + 100}px)`, opacity: 0 }
             ], {
-                duration: Math.random() * 3000 + 2000,
+                duration: isMobile ? Math.random() * 2000 + 3000 : Math.random() * 3000 + 2000,
                 easing: 'linear'
             });
             
             animation.onfinish = () => particle.remove();
         }
 
-        // Generate particles periodically
-        setInterval(createParticle, 300);
+        // Generate particles with mobile-optimized frequency
+        setInterval(createParticle, isMobile ? 800 : 300);
 
-        // Floating Contact Menu Toggle
+        // Mobile-Optimized Floating Contact Menu Toggle
         const mainContactBtn = document.getElementById('mainContactBtn');
         const subContactButtons = document.getElementById('subContactButtons');
         let isMenuOpen = false;
+        let touchStartY = 0;
+        let touchStartTime = 0;
 
-        mainContactBtn.addEventListener('click', () => {
+        function toggleMenu() {
             isMenuOpen = !isMenuOpen;
             
             if (isMenuOpen) {
@@ -1266,10 +1327,49 @@
                 mainContactBtn.querySelector('.btn-icon').textContent = '💬';
                 mainContactBtn.querySelector('.btn-text').textContent = 'Liên hệ';
             }
-        });
+        }
 
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
+        // Enhanced touch support for mobile
+        if (isMobile) {
+            // Touch events for better mobile experience
+            mainContactBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+                mainContactBtn.style.transform = isMenuOpen ? 'rotate(45deg) scale(0.95)' : 'rotate(0deg) scale(0.95)';
+            });
+
+            mainContactBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const touchEndY = e.changedTouches[0].clientY;
+                const touchDuration = Date.now() - touchStartTime;
+                const touchDistance = Math.abs(touchEndY - touchStartY);
+                
+                // Only toggle if it's a tap (not a swipe)
+                if (touchDuration < 300 && touchDistance < 10) {
+                    toggleMenu();
+                }
+                
+                // Reset scale
+                mainContactBtn.style.transform = isMenuOpen ? 'rotate(45deg) scale(1)' : 'rotate(0deg) scale(1)';
+            });
+
+            // Swipe up gesture to open menu
+            mainContactBtn.addEventListener('touchmove', (e) => {
+                const currentY = e.touches[0].clientY;
+                const swipeDistance = touchStartY - currentY;
+                
+                if (swipeDistance > 30 && !isMenuOpen) {
+                    toggleMenu();
+                }
+            });
+        } else {
+            // Desktop click event
+            mainContactBtn.addEventListener('click', toggleMenu);
+        }
+
+        // Close menu when clicking/touching outside
+        document.addEventListener(isMobile ? 'touchstart' : 'click', (e) => {
             if (!e.target.closest('.floating-contact-menu') && isMenuOpen) {
                 isMenuOpen = false;
                 subContactButtons.classList.remove('active');
@@ -1279,29 +1379,31 @@
             }
         });
 
-        // Interactive cursor effect
-        document.addEventListener('mousemove', (e) => {
-            const cursor = document.createElement('div');
-            cursor.style.position = 'fixed';
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            cursor.style.width = '6px';
-            cursor.style.height = '6px';
-            cursor.style.background = 'rgba(0, 255, 255, 0.6)';
-            cursor.style.borderRadius = '50%';
-            cursor.style.pointerEvents = 'none';
-            cursor.style.zIndex = '9999';
-            cursor.style.transform = 'translate(-50%, -50%)';
-            
-            document.body.appendChild(cursor);
-            
-            setTimeout(() => {
-                cursor.style.opacity = '0';
-                cursor.style.transform = 'translate(-50%, -50%) scale(2)';
-                cursor.style.transition = 'all 0.5s ease';
-                setTimeout(() => cursor.remove(), 500);
-            }, 50);
-        });
+        // Interactive cursor effect (Desktop only)
+        if (!isMobile) {
+            document.addEventListener('mousemove', (e) => {
+                const cursor = document.createElement('div');
+                cursor.style.position = 'fixed';
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                cursor.style.width = '6px';
+                cursor.style.height = '6px';
+                cursor.style.background = 'rgba(0, 255, 255, 0.6)';
+                cursor.style.borderRadius = '50%';
+                cursor.style.pointerEvents = 'none';
+                cursor.style.zIndex = '9999';
+                cursor.style.transform = 'translate(-50%, -50%)';
+                
+                document.body.appendChild(cursor);
+                
+                setTimeout(() => {
+                    cursor.style.opacity = '0';
+                    cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+                    cursor.style.transition = 'all 0.5s ease';
+                    setTimeout(() => cursor.remove(), 500);
+                }, 50);
+            });
+        }
     </script>
 </body>
 </html>
