@@ -1224,16 +1224,6 @@
         // Mobile Detection
         const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
-        // Performance Mode Detection (for low-end devices)
-        const isLowEndDevice = isMobile && (
-            navigator.hardwareConcurrency <= 2 || // 2 cores or less
-            navigator.deviceMemory <= 2 || // 2GB RAM or less
-            /Android.*[4-6]\./i.test(navigator.userAgent) // Old Android versions
-        );
-        
-        // Performance settings
-        const performanceMode = isLowEndDevice ? 'low' : (isMobile ? 'medium' : 'high');
-        
         // Mobile-Optimized Loading Animation
         window.addEventListener('load', () => {
             const loading = document.getElementById('loading');
@@ -1588,178 +1578,6 @@
                       opacity: 0;
                   }
               }
-              
-              .aurora-trail {
-                  position: fixed;
-                  pointer-events: none;
-                  z-index: 9998;
-                  border-radius: 50% 30% 60% 40%;
-                  opacity: 0.8;
-                  filter: blur(0.5px);
-                  mix-blend-mode: screen;
-              }
-              
-              .nebula-particle {
-                  position: fixed;
-                  pointer-events: none;
-                  z-index: 9997;
-                  border-radius: 60% 40% 50% 70%;
-                  opacity: 0.7;
-                  filter: blur(1px);
-                  mix-blend-mode: color-dodge;
-              }
-              
-              @keyframes auroraFlow {
-                  0% {
-                      opacity: 0.8;
-                      transform: scale(1) rotate(0deg) skewX(0deg);
-                      filter: blur(0.5px) hue-rotate(0deg);
-                  }
-                  25% {
-                      opacity: 0.9;
-                      transform: scale(1.3) rotate(90deg) skewX(10deg);
-                      filter: blur(0.5px) hue-rotate(60deg);
-                  }
-                  50% {
-                      opacity: 0.7;
-                      transform: scale(1.6) rotate(180deg) skewX(-5deg);
-                      filter: blur(1px) hue-rotate(120deg);
-                  }
-                  75% {
-                      opacity: 0.8;
-                      transform: scale(1.2) rotate(270deg) skewX(15deg);
-                      filter: blur(0.5px) hue-rotate(180deg);
-                  }
-                  100% {
-                      opacity: 0;
-                      transform: scale(0.5) rotate(360deg) skewX(0deg);
-                      filter: blur(1px) hue-rotate(240deg);
-                  }
-              }
-              
-              @keyframes nebulaExpand {
-                  0% {
-                      opacity: 0.7;
-                      transform: scale(0.5) rotate(0deg);
-                      filter: blur(1px) brightness(1.2);
-                  }
-                  30% {
-                      opacity: 0.9;
-                      transform: scale(2) rotate(120deg);
-                      filter: blur(1.5px) brightness(1.5);
-                  }
-                  60% {
-                      opacity: 0.6;
-                      transform: scale(3.5) rotate(240deg);
-                      filter: blur(2px) brightness(1.1);
-                  }
-                  100% {
-                      opacity: 0;
-                      transform: scale(5) rotate(360deg);
-                      filter: blur(2.5px) brightness(0.8);
-                  }
-              }
-              
-              @keyframes nebulaConverge {
-                   0% {
-                       opacity: 0.7;
-                       transform: scale(1) translate(0, 0) rotate(0deg);
-                       filter: blur(1px);
-                   }
-                   40% {
-                       opacity: 0.9;
-                       transform: scale(2.5) translate(calc(var(--target-x) * 0.2), calc(var(--target-y) * 0.2)) rotate(180deg);
-                       filter: blur(1.5px);
-                   }
-                   70% {
-                       opacity: 0.8;
-                       transform: scale(1.8) translate(calc(var(--target-x) * 0.6), calc(var(--target-y) * 0.6)) rotate(270deg);
-                       filter: blur(1px);
-                   }
-                   100% {
-                       opacity: 0;
-                       transform: scale(0.2) translate(var(--target-x), var(--target-y)) rotate(360deg);
-                       filter: blur(0.5px);
-                   }
-               }
-               
-               .lightning-trail {
-                   position: fixed;
-                   pointer-events: none;
-                   z-index: 9999;
-                   opacity: 0.9;
-                   mix-blend-mode: screen;
-               }
-               
-               .electric-spark {
-                   position: fixed;
-                   pointer-events: none;
-                   z-index: 10000;
-                   border-radius: 50%;
-                   opacity: 0.8;
-                   mix-blend-mode: screen;
-               }
-               
-               @keyframes lightningStrike {
-                   0% {
-                       opacity: 0.9;
-                       transform: scale(1) rotate(0deg);
-                       filter: brightness(2) contrast(1.5);
-                   }
-                   10% {
-                       opacity: 1;
-                       transform: scale(1.2) rotate(5deg);
-                       filter: brightness(3) contrast(2);
-                   }
-                   20% {
-                       opacity: 0.7;
-                       transform: scale(0.9) rotate(-3deg);
-                       filter: brightness(1.5) contrast(1.2);
-                   }
-                   30% {
-                       opacity: 1;
-                       transform: scale(1.1) rotate(2deg);
-                       filter: brightness(2.5) contrast(1.8);
-                   }
-                   50% {
-                       opacity: 0.8;
-                       transform: scale(1.3) rotate(-1deg);
-                       filter: brightness(1.8) contrast(1.3);
-                   }
-                   100% {
-                       opacity: 0;
-                       transform: scale(0.3) rotate(0deg);
-                       filter: brightness(1) contrast(1);
-                   }
-               }
-               
-               @keyframes electricSpark {
-                   0% {
-                       opacity: 0.8;
-                       transform: scale(1) translate(0, 0);
-                       filter: brightness(2);
-                   }
-                   25% {
-                       opacity: 1;
-                       transform: scale(1.5) translate(var(--spark-x), var(--spark-y));
-                       filter: brightness(3);
-                   }
-                   50% {
-                       opacity: 0.9;
-                       transform: scale(1.2) translate(calc(var(--spark-x) * 1.5), calc(var(--spark-y) * 1.5));
-                       filter: brightness(2.5);
-                   }
-                   75% {
-                       opacity: 0.6;
-                       transform: scale(0.8) translate(calc(var(--spark-x) * 2), calc(var(--spark-y) * 2));
-                       filter: brightness(1.5);
-                   }
-                   100% {
-                       opacity: 0;
-                       transform: scale(0.2) translate(calc(var(--spark-x) * 3), calc(var(--spark-y) * 3));
-                       filter: brightness(1);
-                   }
-               }
           `;
           document.head.appendChild(style);
 
@@ -1822,15 +1640,13 @@
           
           function createStarTrail(x, y) {
                const now = Date.now();
-               // Dynamic throttling based on performance mode
-               const throttleDelay = performanceMode === 'low' ? 100 : (performanceMode === 'medium' ? 60 : 30);
-               if (now - lastTouchTime < throttleDelay) return;
+               if (now - lastTouchTime < 30) return; // Optimized throttle for smoother trail
                
                lastTouchTime = now;
                
-               // Performance optimization: adaptive particles based on device capability
-               const maxParticles = performanceMode === 'low' ? 1 : (performanceMode === 'medium' ? 1 : 2);
-               const particleDelay = performanceMode === 'low' ? 150 : (performanceMode === 'medium' ? 120 : 80);
+               // Performance optimization: limit particles based on device capability
+               const maxParticles = isMobile ? 2 : 4;
+               const particleDelay = isMobile ? 80 : 50;
                
                // Create multiple particles for richer effect with velocity-based spacing
                const velocity = touchTrail.length > 1 ? 
@@ -1850,32 +1666,6 @@
                        const intensity = 0.5 + (velocityFactor * 0.5);
                        
                        createStarParticle(x + offsetX, y + offsetY, null, null, size, intensity);
-                       
-                       // Add premium effects based on velocity and performance mode
-                       if (performanceMode !== 'low') {
-                           const effectProbability = performanceMode === 'medium' ? 0.5 : 1.0;
-                           
-                           if (velocity > 60) {
-                               // High velocity: Aurora Borealis effect
-                               if (Math.random() < (0.3 * effectProbability)) {
-                                   createAuroraTrail(x + offsetX * 1.5, y + offsetY * 1.5, velocity);
-                               }
-                           }
-                           
-                           if (velocity > 100 && performanceMode === 'high') {
-                               // Very high velocity: Nebula particles (only on high performance)
-                               if (Math.random() < 0.15) {
-                                   createNebulaParticle(x + offsetX * 2, y + offsetY * 2, null, null, velocity);
-                               }
-                           }
-                           
-                           if (velocity > 150 && performanceMode === 'high') {
-                               // Extreme velocity: Lightning Trail effect (only on high performance)
-                               if (Math.random() < 0.1) {
-                                   createLightningTrail(x + offsetX * 0.8, y + offsetY * 0.8, velocity);
-                               }
-                           }
-                       }
                    }, i * particleDelay);
                }
                
@@ -1886,177 +1676,6 @@
                if (touchTrail.length > 20) {
                    touchTrail = touchTrail.filter(point => now - point.time < 800);
                }
-           }
-          
-          function createAuroraTrail(x, y, velocity = 0) {
-               const aurora = document.createElement('div');
-               aurora.className = 'aurora-trail';
-               aurora.style.left = x + 'px';
-               aurora.style.top = y + 'px';
-               
-               // Dynamic Aurora colors based on position and velocity
-               const hue1 = (x + y) % 360; // Position-based hue
-               const hue2 = (hue1 + 120 + velocity * 2) % 360; // Velocity affects color shift
-               const hue3 = (hue2 + 120) % 360;
-               
-               const size = 15 + velocity * 0.3;
-               const intensity = 0.6 + Math.min(velocity * 0.01, 0.4);
-               
-               aurora.style.width = size + 'px';
-               aurora.style.height = (size * 0.6) + 'px';
-               aurora.style.background = `
-                   radial-gradient(ellipse 100% 60% at center, 
-                       hsla(${hue1}, 100%, 70%, ${intensity}) 0%,
-                       hsla(${hue2}, 90%, 60%, ${intensity * 0.8}) 30%,
-                       hsla(${hue3}, 80%, 50%, ${intensity * 0.6}) 60%,
-                       transparent 100%)`;
-               
-               aurora.style.boxShadow = `
-                   0 0 ${size}px hsla(${hue1}, 100%, 70%, 0.8),
-                   0 0 ${size * 2}px hsla(${hue2}, 90%, 60%, 0.6),
-                   0 0 ${size * 3}px hsla(${hue3}, 80%, 50%, 0.4)`;
-               
-               aurora.style.animation = `auroraFlow ${2 + Math.random()}s ease-out forwards`;
-               
-               document.body.appendChild(aurora);
-               
-               setTimeout(() => {
-                   if (aurora.parentNode) {
-                       aurora.remove();
-                   }
-               }, 3000);
-               
-               return aurora;
-           }
-          
-          function createNebulaParticle(x, y, targetX = null, targetY = null, velocity = 0) {
-               const nebula = document.createElement('div');
-               nebula.className = 'nebula-particle';
-               nebula.style.left = x + 'px';
-               nebula.style.top = y + 'px';
-               
-               // Cosmic nebula colors with depth
-               const baseHue = Math.random() * 60 + 240; // Purple to blue range
-               const saturation = 70 + Math.random() * 30;
-               const lightness = 40 + Math.random() * 30;
-               
-               const size = 20 + velocity * 0.2 + Math.random() * 15;
-               const opacity = 0.4 + Math.min(velocity * 0.008, 0.3);
-               
-               nebula.style.width = size + 'px';
-               nebula.style.height = size + 'px';
-               nebula.style.background = `
-                   radial-gradient(ellipse at 30% 30%, 
-                       hsla(${baseHue}, ${saturation}%, ${lightness + 20}%, ${opacity}) 0%,
-                       hsla(${baseHue + 30}, ${saturation - 10}%, ${lightness}%, ${opacity * 0.8}) 40%,
-                       hsla(${baseHue + 60}, ${saturation - 20}%, ${lightness - 10}%, ${opacity * 0.6}) 70%,
-                       transparent 100%)`;
-               
-               if (targetX !== null && targetY !== null) {
-                   const deltaX = targetX - x;
-                   const deltaY = targetY - y;
-                   nebula.style.setProperty('--target-x', deltaX + 'px');
-                   nebula.style.setProperty('--target-y', deltaY + 'px');
-                   nebula.style.animation = 'nebulaConverge 2.5s ease-out forwards';
-               } else {
-                   nebula.style.animation = 'nebulaExpand 3s ease-out forwards';
-               }
-               
-               document.body.appendChild(nebula);
-               
-               setTimeout(() => {
-                   if (nebula.parentNode) {
-                       nebula.remove();
-                   }
-               }, targetX !== null ? 3000 : 3500);
-               
-               return nebula;
-           }
-          
-          function createLightningTrail(x, y, velocity = 0) {
-               const lightning = document.createElement('div');
-               lightning.className = 'lightning-trail';
-               lightning.style.left = x + 'px';
-               lightning.style.top = y + 'px';
-               
-               // Lightning bolt shape and colors
-               const width = 3 + velocity * 0.1;
-               const height = 25 + velocity * 0.2;
-               const intensity = 0.8 + Math.min(velocity * 0.005, 0.2);
-               
-               // Electric blue to white gradient
-               lightning.style.width = width + 'px';
-               lightning.style.height = height + 'px';
-               lightning.style.background = `
-                   linear-gradient(${Math.random() * 360}deg,
-                       rgba(135, 206, 255, ${intensity}) 0%,
-                       rgba(255, 255, 255, ${intensity * 0.9}) 20%,
-                       rgba(173, 216, 255, ${intensity * 0.8}) 40%,
-                       rgba(255, 255, 255, ${intensity}) 60%,
-                       rgba(135, 206, 255, ${intensity * 0.7}) 80%,
-                       transparent 100%)`;
-               
-               lightning.style.boxShadow = `
-                   0 0 ${width * 3}px rgba(135, 206, 255, 0.8),
-                   0 0 ${width * 6}px rgba(255, 255, 255, 0.6),
-                   0 0 ${width * 9}px rgba(173, 216, 255, 0.4)`;
-               
-               lightning.style.animation = `lightningStrike ${0.8 + Math.random() * 0.4}s ease-out forwards`;
-               
-               document.body.appendChild(lightning);
-               
-               // Create electric sparks
-               for (let i = 0; i < 3; i++) {
-                   setTimeout(() => {
-                       createElectricSpark(x, y, velocity);
-                   }, i * 100);
-               }
-               
-               setTimeout(() => {
-                   if (lightning.parentNode) {
-                       lightning.remove();
-                   }
-               }, 1500);
-               
-               return lightning;
-           }
-          
-          function createElectricSpark(x, y, velocity = 0) {
-               const spark = document.createElement('div');
-               spark.className = 'electric-spark';
-               spark.style.left = x + 'px';
-               spark.style.top = y + 'px';
-               
-               const size = 2 + Math.random() * 3;
-               const sparkX = (Math.random() - 0.5) * 30;
-               const sparkY = (Math.random() - 0.5) * 30;
-               
-               spark.style.width = size + 'px';
-               spark.style.height = size + 'px';
-               spark.style.background = `
-                   radial-gradient(circle,
-                       rgba(255, 255, 255, 0.9) 0%,
-                       rgba(135, 206, 255, 0.8) 30%,
-                       rgba(173, 216, 255, 0.6) 60%,
-                       transparent 100%)`;
-               
-               spark.style.boxShadow = `
-                   0 0 ${size * 2}px rgba(255, 255, 255, 0.8),
-                   0 0 ${size * 4}px rgba(135, 206, 255, 0.6)`;
-               
-               spark.style.setProperty('--spark-x', sparkX + 'px');
-               spark.style.setProperty('--spark-y', sparkY + 'px');
-               spark.style.animation = `electricSpark ${0.6 + Math.random() * 0.3}s ease-out forwards`;
-               
-               document.body.appendChild(spark);
-               
-               setTimeout(() => {
-                   if (spark.parentNode) {
-                       spark.remove();
-                   }
-               }, 1000);
-               
-               return spark;
            }
           
           function createConvergeEffect(centerX, centerY) {
@@ -2076,14 +1695,6 @@
                            
                            setTimeout(() => {
                                createStarParticle(startX, startY, centerX, centerY);
-                               
-                               // Add premium converge effects
-                               if (Math.random() < 0.6) {
-                                   createAuroraTrail(startX, startY, 40);
-                               }
-                               if (Math.random() < 0.3) {
-                                   createNebulaParticle(startX, startY, centerX, centerY, 60);
-                               }
                            }, i * 50);
                        }
                    }, pattern.delay);
@@ -2099,20 +1710,12 @@
                        
                        setTimeout(() => {
                            createStarParticle(startX, startY, centerX, centerY);
-                           
-                           // Premium spiral effects
-                           if (Math.random() < 0.8) {
-                               createAuroraTrail(startX, startY, 50 + i * 2);
-                           }
-                           if (Math.random() < 0.5) {
-                               createNebulaParticle(startX, startY, centerX, centerY, 70 + i);
-                           }
                        }, i * 80);
                    }
                }, 1000);
            }
 
-        // Global touch events for mobile menu control (Star trail effect disabled)
+        // Global touch events for star trail effect (Mobile only)
         if (isMobile) {
             document.addEventListener('touchstart', (e) => {
                 if (!e.target.closest('.floating-contact-menu')) {
@@ -2123,34 +1726,32 @@
                         mainContactBtn.querySelector('.btn-icon').textContent = '💬';
                         mainContactBtn.querySelector('.btn-text').textContent = 'Liên hệ';
                     }
-                    // Star trail effect disabled
-                    // isTracking = true;
-                    // const touch = e.touches[0];
-                    // createStarTrail(touch.clientX, touch.clientY);
+                    // Start star trail
+                    isTracking = true;
+                    const touch = e.touches[0];
+                    createStarTrail(touch.clientX, touch.clientY);
                 }
             });
 
             document.addEventListener('touchmove', (e) => {
-                // Star trail effect disabled
-                // if (isTracking && !e.target.closest('.floating-contact-menu')) {
-                //     const touch = e.touches[0];
-                //     createStarTrail(touch.clientX, touch.clientY);
-                // }
+                if (isTracking && !e.target.closest('.floating-contact-menu')) {
+                    const touch = e.touches[0];
+                    createStarTrail(touch.clientX, touch.clientY);
+                }
             });
 
             document.addEventListener('touchend', (e) => {
-                // Star trail effect disabled
-                // if (isTracking) {
-                //     isTracking = false;
-                //     // Create converge effect at the end point
-                //     if (touchTrail.length > 0) {
-                //         const lastPoint = touchTrail[touchTrail.length - 1];
-                //         setTimeout(() => {
-                //             createConvergeEffect(lastPoint.x, lastPoint.y);
-                //         }, 200);
-                //     }
-                //     touchTrail = [];
-                // }
+                if (isTracking) {
+                    isTracking = false;
+                    // Create converge effect at the end point
+                    if (touchTrail.length > 0) {
+                        const lastPoint = touchTrail[touchTrail.length - 1];
+                        setTimeout(() => {
+                            createConvergeEffect(lastPoint.x, lastPoint.y);
+                        }, 200);
+                    }
+                    touchTrail = [];
+                }
             });
         } else {
             // Desktop click event for closing menu
