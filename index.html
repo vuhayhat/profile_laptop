@@ -1851,25 +1851,29 @@
                        
                        createStarParticle(x + offsetX, y + offsetY, null, null, size, intensity);
                        
-                       // Add premium effects based on velocity (optimized for performance)
-                       if (velocity > 60) {
-                           // High velocity: Aurora Borealis effect (reduced probability)
-                           if (Math.random() < 0.3) {
-                               createAuroraTrail(x + offsetX * 1.5, y + offsetY * 1.5, velocity);
+                       // Add premium effects based on velocity and performance mode
+                       if (performanceMode !== 'low') {
+                           const effectProbability = performanceMode === 'medium' ? 0.5 : 1.0;
+                           
+                           if (velocity > 60) {
+                               // High velocity: Aurora Borealis effect
+                               if (Math.random() < (0.3 * effectProbability)) {
+                                   createAuroraTrail(x + offsetX * 1.5, y + offsetY * 1.5, velocity);
+                               }
                            }
-                       }
-                       
-                       if (velocity > 100) {
-                           // Very high velocity: Nebula particles (reduced probability)
-                           if (Math.random() < 0.15) {
-                               createNebulaParticle(x + offsetX * 2, y + offsetY * 2, null, null, velocity);
+                           
+                           if (velocity > 100 && performanceMode === 'high') {
+                               // Very high velocity: Nebula particles (only on high performance)
+                               if (Math.random() < 0.15) {
+                                   createNebulaParticle(x + offsetX * 2, y + offsetY * 2, null, null, velocity);
+                               }
                            }
-                       }
-                       
-                       if (velocity > 150) {
-                           // Extreme velocity: Lightning Trail effect (reduced probability)
-                           if (Math.random() < 0.1) {
-                               createLightningTrail(x + offsetX * 0.8, y + offsetY * 0.8, velocity);
+                           
+                           if (velocity > 150 && performanceMode === 'high') {
+                               // Extreme velocity: Lightning Trail effect (only on high performance)
+                               if (Math.random() < 0.1) {
+                                   createLightningTrail(x + offsetX * 0.8, y + offsetY * 0.8, velocity);
+                               }
                            }
                        }
                    }, i * particleDelay);
@@ -2108,7 +2112,7 @@
                }, 1000);
            }
 
-        // Global touch events for star trail effect (Mobile only)
+        // Global touch events for mobile menu control (Star trail effect disabled)
         if (isMobile) {
             document.addEventListener('touchstart', (e) => {
                 if (!e.target.closest('.floating-contact-menu')) {
@@ -2119,32 +2123,34 @@
                         mainContactBtn.querySelector('.btn-icon').textContent = '💬';
                         mainContactBtn.querySelector('.btn-text').textContent = 'Liên hệ';
                     }
-                    // Start star trail
-                    isTracking = true;
-                    const touch = e.touches[0];
-                    createStarTrail(touch.clientX, touch.clientY);
+                    // Star trail effect disabled
+                    // isTracking = true;
+                    // const touch = e.touches[0];
+                    // createStarTrail(touch.clientX, touch.clientY);
                 }
             });
 
             document.addEventListener('touchmove', (e) => {
-                if (isTracking && !e.target.closest('.floating-contact-menu')) {
-                    const touch = e.touches[0];
-                    createStarTrail(touch.clientX, touch.clientY);
-                }
+                // Star trail effect disabled
+                // if (isTracking && !e.target.closest('.floating-contact-menu')) {
+                //     const touch = e.touches[0];
+                //     createStarTrail(touch.clientX, touch.clientY);
+                // }
             });
 
             document.addEventListener('touchend', (e) => {
-                if (isTracking) {
-                    isTracking = false;
-                    // Create converge effect at the end point
-                    if (touchTrail.length > 0) {
-                        const lastPoint = touchTrail[touchTrail.length - 1];
-                        setTimeout(() => {
-                            createConvergeEffect(lastPoint.x, lastPoint.y);
-                        }, 200);
-                    }
-                    touchTrail = [];
-                }
+                // Star trail effect disabled
+                // if (isTracking) {
+                //     isTracking = false;
+                //     // Create converge effect at the end point
+                //     if (touchTrail.length > 0) {
+                //         const lastPoint = touchTrail[touchTrail.length - 1];
+                //         setTimeout(() => {
+                //             createConvergeEffect(lastPoint.x, lastPoint.y);
+                //         }, 200);
+                //     }
+                //     touchTrail = [];
+                // }
             });
         } else {
             // Desktop click event for closing menu
