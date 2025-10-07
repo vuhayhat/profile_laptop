@@ -31,6 +31,29 @@
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Enhanced Mobile Scrolling */
+        @media (max-width: 768px) {
+            html {
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+            
+            body {
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-y: contain;
+                scroll-snap-type: y proximity;
+            }
+            
+            /* Smooth momentum scrolling for sections */
+            .hero, .brands, .about, .contact {
+                scroll-snap-align: start;
+                scroll-margin-top: 80px;
+            }
         }
 
         body {
@@ -593,16 +616,20 @@
             right: 20px;
             bottom: 30px;
             z-index: 1000;
-            animation: slideInUp 0.8s ease-out;
+            animation: slideInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @keyframes slideInUp {
-            from {
-                transform: translateY(100px);
+            0% {
+                transform: translateY(100px) scale(0.8);
                 opacity: 0;
             }
-            to {
-                transform: translateY(0);
+            60% {
+                transform: translateY(-10px) scale(1.05);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0) scale(1);
                 opacity: 1;
             }
         }
@@ -704,7 +731,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             white-space: nowrap;
             transform: translateX(20px);
-            animation: slideInLeft 0.3s ease forwards;
+            animation: slideInLeft 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         .sub-btn:nth-child(1) { animation-delay: 0.1s; }
@@ -712,8 +739,17 @@
         .sub-btn:nth-child(3) { animation-delay: 0.3s; }
 
         @keyframes slideInLeft {
-            to {
-                transform: translateX(0);
+            0% {
+                transform: translateX(50px) scale(0.9);
+                opacity: 0;
+            }
+            70% {
+                transform: translateX(-5px) scale(1.02);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
             }
         }
 
@@ -1208,6 +1244,17 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                    
+                    // Add staggered animation for child elements
+                    const children = entry.target.querySelectorAll('.brand-item, .contact-btn, .hero-title, .hero-subtitle');
+                    children.forEach((child, index) => {
+                        setTimeout(() => {
+                            child.style.animation = `slideInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`;
+                            child.style.animationDelay = `${index * 0.1}s`;
+                            child.style.opacity = '1';
+                        }, index * 100);
+                    });
+                    
                     // Unobserve on mobile to improve performance
                     if (isMobile) {
                         observer.unobserve(entry.target);
@@ -1324,37 +1371,79 @@
         // Generate particles with mobile-optimized frequency
         setInterval(createParticle, isMobile ? 800 : 300);
 
-        // Mobile-Optimized Floating Contact Menu Toggle
+        // Mobile-Optimized Floating Contact Menu Toggle with Enhanced Gestures
         const mainContactBtn = document.getElementById('mainContactBtn');
         const subContactButtons = document.getElementById('subContactButtons');
         let isMenuOpen = false;
         let touchStartY = 0;
+        let touchStartX = 0;
         let touchStartTime = 0;
+        let isDragging = false;
 
         function toggleMenu() {
             isMenuOpen = !isMenuOpen;
             
             if (isMenuOpen) {
                 subContactButtons.classList.add('active');
-                mainContactBtn.style.transform = 'rotate(45deg)';
+                mainContactBtn.style.transform = 'rotate(45deg) scale(1.1)';
                 mainContactBtn.querySelector('.btn-icon').textContent = '✕';
                 mainContactBtn.querySelector('.btn-text').textContent = 'Đóng';
+                
+                // Add stagger animation to sub buttons
+                const subBtns = subContactButtons.querySelectorAll('.sub-btn');
+                subBtns.forEach((btn, index) => {
+                    btn.style.animationDelay = `${index * 0.1}s`;
+                    btn.style.transform = 'translateX(0) scale(1)';
+                });
             } else {
                 subContactButtons.classList.remove('active');
-                mainContactBtn.style.transform = 'rotate(0deg)';
+                mainContactBtn.style.transform = 'rotate(0deg) scale(1)';
                 mainContactBtn.querySelector('.btn-icon').textContent = '💬';
                 mainContactBtn.querySelector('.btn-text').textContent = 'Liên hệ';
+                
+                // Add exit animation to sub buttons
+                const subBtns = subContactButtons.querySelectorAll('.sub-btn');
+                subBtns.forEach(btn => {
+                    btn.style.transform = 'translateX(20px) scale(0.8)';
+                });
             }
         }
 
-        // Enhanced touch support for mobile
+        // Enhanced touch support for mobile with swipe gestures
         if (isMobile) {
             // Touch events for better mobile experience
             mainContactBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
                 touchStartTime = Date.now();
+                isDragging = false;
                 mainContactBtn.style.transform = isMenuOpen ? 'rotate(45deg) scale(0.95)' : 'rotate(0deg) scale(0.95)';
+            });
+
+            mainContactBtn.addEventListener('touchmove', (e) => {
+                if (!touchStartY || !touchStartX) return;
+                
+                const currentY = e.touches[0].clientY;
+                const currentX = e.touches[0].clientX;
+                const diffY = touchStartY - currentY;
+                const diffX = touchStartX - currentX;
+                
+                if (Math.abs(diffY) > 10 || Math.abs(diffX) > 10) {
+                    isDragging = true;
+                }
+                
+                // Swipe up to open menu
+                if (diffY > 50 && Math.abs(diffX) < 100 && !isMenuOpen) {
+                    toggleMenu();
+                    e.preventDefault();
+                }
+                
+                // Swipe down to close menu
+                if (diffY < -50 && Math.abs(diffX) < 100 && isMenuOpen) {
+                    toggleMenu();
+                    e.preventDefault();
+                }
             });
 
             mainContactBtn.addEventListener('touchend', (e) => {
@@ -1364,38 +1453,699 @@
                 const touchDistance = Math.abs(touchEndY - touchStartY);
                 
                 // Only toggle if it's a tap (not a swipe)
-                if (touchDuration < 300 && touchDistance < 10) {
+                if (touchDuration < 300 && touchDistance < 10 && !isDragging) {
                     toggleMenu();
                 }
                 
                 // Reset scale
-                mainContactBtn.style.transform = isMenuOpen ? 'rotate(45deg) scale(1)' : 'rotate(0deg) scale(1)';
-            });
-
-            // Swipe up gesture to open menu
-            mainContactBtn.addEventListener('touchmove', (e) => {
-                const currentY = e.touches[0].clientY;
-                const swipeDistance = touchStartY - currentY;
+                mainContactBtn.style.transform = isMenuOpen ? 'rotate(45deg) scale(1.1)' : 'rotate(0deg) scale(1)';
                 
-                if (swipeDistance > 30 && !isMenuOpen) {
-                    toggleMenu();
-                }
+                // Reset touch variables
+                touchStartY = 0;
+                touchStartX = 0;
+                isDragging = false;
             });
         } else {
             // Desktop click event
             mainContactBtn.addEventListener('click', toggleMenu);
+            
+            // Desktop hover effects
+            mainContactBtn.addEventListener('mouseenter', () => {
+                if (!isMenuOpen) {
+                    mainContactBtn.style.transform = 'scale(1.05)';
+                }
+            });
+            
+            mainContactBtn.addEventListener('mouseleave', () => {
+                if (!isMenuOpen) {
+                    mainContactBtn.style.transform = 'scale(1)';
+                }
+            });
         }
+        
+        // Prevent scrolling when interacting with floating menu
+         document.querySelector('.floating-contact-menu').addEventListener('touchmove', (e) => {
+             e.stopPropagation();
+         });
 
-        // Close menu when clicking/touching outside
-        document.addEventListener(isMobile ? 'touchstart' : 'click', (e) => {
-            if (!e.target.closest('.floating-contact-menu') && isMenuOpen) {
-                isMenuOpen = false;
-                subContactButtons.classList.remove('active');
-                mainContactBtn.style.transform = 'rotate(0deg)';
-                mainContactBtn.querySelector('.btn-icon').textContent = '💬';
-                mainContactBtn.querySelector('.btn-text').textContent = 'Liên hệ';
-            }
-        });
+         // Haptic feedback simulation and visual feedback for mobile
+         function addHapticFeedback(element) {
+             if (isMobile && 'vibrate' in navigator) {
+                 // Light haptic feedback
+                 navigator.vibrate(10);
+             }
+             
+             // Visual feedback with ripple effect
+             const ripple = document.createElement('div');
+             ripple.style.cssText = `
+                 position: absolute;
+                 border-radius: 50%;
+                 background: rgba(255, 255, 255, 0.6);
+                 transform: scale(0);
+                 animation: ripple 0.6s linear;
+                 pointer-events: none;
+                 width: 20px;
+                 height: 20px;
+                 left: 50%;
+                 top: 50%;
+                 margin-left: -10px;
+                 margin-top: -10px;
+             `;
+             
+             element.style.position = 'relative';
+             element.appendChild(ripple);
+             
+             setTimeout(() => {
+                 ripple.remove();
+             }, 600);
+         }
+
+         // Add haptic feedback to all interactive elements
+         document.querySelectorAll('.contact-btn, .sub-btn, .main-btn').forEach(btn => {
+             btn.addEventListener('touchstart', () => {
+                 addHapticFeedback(btn);
+             });
+         });
+
+         // Add CSS for ripple animation and star trail
+          const style = document.createElement('style');
+          style.textContent = `
+              @keyframes ripple {
+                  to {
+                      transform: scale(4);
+                      opacity: 0;
+                  }
+              }
+              
+              .touch-feedback {
+                  transform: scale(0.95);
+                  transition: transform 0.1s ease;
+              }
+              
+              .star-trail {
+                  position: fixed;
+                  pointer-events: none;
+                  z-index: 9999;
+                  width: 4px;
+                  height: 4px;
+                  background: radial-gradient(circle, #fff 0%, #4facfe 50%, transparent 100%);
+                  border-radius: 50%;
+                  box-shadow: 0 0 6px #4facfe, 0 0 12px #4facfe, 0 0 18px #4facfe;
+              }
+              
+              @keyframes starFloat {
+                  0% {
+                      transform: scale(1) rotate(0deg);
+                      opacity: 1;
+                  }
+                  50% {
+                      transform: scale(1.5) rotate(180deg);
+                      opacity: 0.8;
+                  }
+                  100% {
+                      transform: scale(0) rotate(360deg);
+                      opacity: 0;
+                  }
+              }
+              
+              @keyframes starConverge {
+                  0% {
+                      transform: scale(1);
+                      opacity: 1;
+                  }
+                  100% {
+                      transform: scale(0) translateX(var(--target-x)) translateY(var(--target-y));
+                      opacity: 0;
+                  }
+              }
+              
+              .aurora-trail {
+                  position: fixed;
+                  pointer-events: none;
+                  z-index: 9998;
+                  border-radius: 50% 30% 60% 40%;
+                  opacity: 0.8;
+                  filter: blur(1px);
+                  mix-blend-mode: screen;
+              }
+              
+              .nebula-particle {
+                  position: fixed;
+                  pointer-events: none;
+                  z-index: 9997;
+                  border-radius: 60% 40% 50% 70%;
+                  opacity: 0.7;
+                  filter: blur(2px);
+                  mix-blend-mode: color-dodge;
+              }
+              
+              @keyframes auroraFlow {
+                  0% {
+                      opacity: 0.8;
+                      transform: scale(1) rotate(0deg) skewX(0deg);
+                      filter: blur(1px) hue-rotate(0deg);
+                  }
+                  25% {
+                      opacity: 0.9;
+                      transform: scale(1.3) rotate(90deg) skewX(10deg);
+                      filter: blur(1.5px) hue-rotate(60deg);
+                  }
+                  50% {
+                      opacity: 0.7;
+                      transform: scale(1.6) rotate(180deg) skewX(-5deg);
+                      filter: blur(2px) hue-rotate(120deg);
+                  }
+                  75% {
+                      opacity: 0.8;
+                      transform: scale(1.2) rotate(270deg) skewX(15deg);
+                      filter: blur(1.8px) hue-rotate(180deg);
+                  }
+                  100% {
+                      opacity: 0;
+                      transform: scale(0.5) rotate(360deg) skewX(0deg);
+                      filter: blur(3px) hue-rotate(240deg);
+                  }
+              }
+              
+              @keyframes nebulaExpand {
+                  0% {
+                      opacity: 0.7;
+                      transform: scale(0.5) rotate(0deg);
+                      filter: blur(2px) brightness(1.2);
+                  }
+                  30% {
+                      opacity: 0.9;
+                      transform: scale(2) rotate(120deg);
+                      filter: blur(3px) brightness(1.5);
+                  }
+                  60% {
+                      opacity: 0.6;
+                      transform: scale(3.5) rotate(240deg);
+                      filter: blur(4px) brightness(1.1);
+                  }
+                  100% {
+                      opacity: 0;
+                      transform: scale(5) rotate(360deg);
+                      filter: blur(6px) brightness(0.8);
+                  }
+              }
+              
+              @keyframes nebulaConverge {
+                   0% {
+                       opacity: 0.7;
+                       transform: scale(1) translate(0, 0) rotate(0deg);
+                       filter: blur(2px);
+                   }
+                   40% {
+                       opacity: 0.9;
+                       transform: scale(2.5) translate(calc(var(--target-x) * 0.2), calc(var(--target-y) * 0.2)) rotate(180deg);
+                       filter: blur(3px);
+                   }
+                   70% {
+                       opacity: 0.8;
+                       transform: scale(1.8) translate(calc(var(--target-x) * 0.6), calc(var(--target-y) * 0.6)) rotate(270deg);
+                       filter: blur(2px);
+                   }
+                   100% {
+                       opacity: 0;
+                       transform: scale(0.2) translate(var(--target-x), var(--target-y)) rotate(360deg);
+                       filter: blur(1px);
+                   }
+               }
+               
+               .lightning-trail {
+                   position: fixed;
+                   pointer-events: none;
+                   z-index: 9999;
+                   opacity: 0.9;
+                   mix-blend-mode: screen;
+               }
+               
+               .electric-spark {
+                   position: fixed;
+                   pointer-events: none;
+                   z-index: 10000;
+                   border-radius: 50%;
+                   opacity: 0.8;
+                   mix-blend-mode: screen;
+               }
+               
+               @keyframes lightningStrike {
+                   0% {
+                       opacity: 0.9;
+                       transform: scale(1) rotate(0deg);
+                       filter: brightness(2) contrast(1.5);
+                   }
+                   10% {
+                       opacity: 1;
+                       transform: scale(1.2) rotate(5deg);
+                       filter: brightness(3) contrast(2);
+                   }
+                   20% {
+                       opacity: 0.7;
+                       transform: scale(0.9) rotate(-3deg);
+                       filter: brightness(1.5) contrast(1.2);
+                   }
+                   30% {
+                       opacity: 1;
+                       transform: scale(1.1) rotate(2deg);
+                       filter: brightness(2.5) contrast(1.8);
+                   }
+                   50% {
+                       opacity: 0.8;
+                       transform: scale(1.3) rotate(-1deg);
+                       filter: brightness(1.8) contrast(1.3);
+                   }
+                   100% {
+                       opacity: 0;
+                       transform: scale(0.3) rotate(0deg);
+                       filter: brightness(1) contrast(1);
+                   }
+               }
+               
+               @keyframes electricSpark {
+                   0% {
+                       opacity: 0.8;
+                       transform: scale(1) translate(0, 0);
+                       filter: brightness(2);
+                   }
+                   25% {
+                       opacity: 1;
+                       transform: scale(1.5) translate(var(--spark-x), var(--spark-y));
+                       filter: brightness(3);
+                   }
+                   50% {
+                       opacity: 0.9;
+                       transform: scale(1.2) translate(calc(var(--spark-x) * 1.5), calc(var(--spark-y) * 1.5));
+                       filter: brightness(2.5);
+                   }
+                   75% {
+                       opacity: 0.6;
+                       transform: scale(0.8) translate(calc(var(--spark-x) * 2), calc(var(--spark-y) * 2));
+                       filter: brightness(1.5);
+                   }
+                   100% {
+                       opacity: 0;
+                       transform: scale(0.2) translate(calc(var(--spark-x) * 3), calc(var(--spark-y) * 3));
+                       filter: brightness(1);
+                   }
+               }
+          `;
+          document.head.appendChild(style);
+
+          // Star Trail Effect System
+          let touchTrail = [];
+          let isTracking = false;
+          let lastTouchTime = 0;
+          
+          function createStarParticle(x, y, targetX = null, targetY = null, customSize = null, intensity = 1) {
+               const star = document.createElement('div');
+               star.className = 'star-trail';
+               star.style.left = x + 'px';
+               star.style.top = y + 'px';
+               
+               // Enhanced variations with velocity-based effects
+               const size = customSize || (Math.random() * 3 + 2);
+               const hue = Math.random() * 80 + 180; // Extended blue to purple range
+               const saturation = 80 + (intensity * 20); // Intensity affects saturation
+               const lightness = 60 + (intensity * 20); // Intensity affects brightness
+               
+               star.style.width = size + 'px';
+               star.style.height = size + 'px';
+               star.style.background = `radial-gradient(circle, 
+                   hsl(${hue}, ${saturation}%, ${lightness}%) 0%, 
+                   hsl(${hue}, ${saturation - 20}%, ${lightness - 20}%) 50%, 
+                   transparent 100%)`;
+               star.style.boxShadow = `
+                   0 0 ${size * 2}px hsl(${hue}, ${saturation}%, ${lightness}%),
+                   0 0 ${size * 4}px hsl(${hue}, ${saturation}%, ${lightness}%, 0.5),
+                   0 0 ${size * 6}px hsl(${hue}, ${saturation}%, ${lightness}%, 0.2)`;
+               
+               if (targetX !== null && targetY !== null) {
+                   // Converge animation with enhanced effects
+                   const deltaX = targetX - x;
+                   const deltaY = targetY - y;
+                   const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                   const duration = Math.min(2, Math.max(0.8, distance / 100));
+                   
+                   star.style.setProperty('--target-x', deltaX + 'px');
+                   star.style.setProperty('--target-y', deltaY + 'px');
+                   star.style.animation = `starConverge ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`;
+               } else {
+                   // Enhanced float animation with intensity
+                   const duration = 1.5 + (intensity * 0.5);
+                   star.style.animation = `starFloat ${duration}s ease-out forwards`;
+               }
+               
+               document.body.appendChild(star);
+               
+               // Cleanup with longer duration for converge effects
+               const cleanupTime = targetX !== null ? 2500 : 2000;
+               setTimeout(() => {
+                   if (star.parentNode) {
+                       star.remove();
+                   }
+               }, cleanupTime);
+               
+               return star;
+           }
+          
+          function createStarTrail(x, y) {
+               const now = Date.now();
+               if (now - lastTouchTime < 30) return; // Optimized throttle for smoother trail
+               
+               lastTouchTime = now;
+               
+               // Performance optimization: limit particles based on device capability
+               const maxParticles = isMobile ? 2 : 4;
+               const particleDelay = isMobile ? 80 : 50;
+               
+               // Create multiple particles for richer effect with velocity-based spacing
+               const velocity = touchTrail.length > 1 ? 
+                   Math.sqrt(Math.pow(x - touchTrail[touchTrail.length - 1].x, 2) + 
+                            Math.pow(y - touchTrail[touchTrail.length - 1].y, 2)) : 0;
+               
+               const numParticles = Math.min(maxParticles, Math.max(1, Math.floor(velocity / 10)));
+               
+               for (let i = 0; i < numParticles; i++) {
+                   setTimeout(() => {
+                       const offsetX = (Math.random() - 0.5) * 25;
+                       const offsetY = (Math.random() - 0.5) * 25;
+                       
+                       // Add velocity-based effects
+                       const velocityFactor = Math.min(velocity / 50, 2);
+                       const size = 2 + velocityFactor;
+                       const intensity = 0.5 + (velocityFactor * 0.5);
+                       
+                       createStarParticle(x + offsetX, y + offsetY, null, null, size, intensity);
+                       
+                       // Add premium effects based on velocity
+                       if (velocity > 30) {
+                           // High velocity: Aurora Borealis effect
+                           if (Math.random() < 0.7) {
+                               createAuroraTrail(x + offsetX * 1.5, y + offsetY * 1.5, velocity);
+                           }
+                       }
+                       
+                       if (velocity > 50) {
+                           // Very high velocity: Nebula particles
+                           if (Math.random() < 0.4) {
+                               createNebulaParticle(x + offsetX * 2, y + offsetY * 2, null, null, velocity);
+                           }
+                       }
+                       
+                       if (velocity > 70) {
+                           // Extreme velocity: Lightning Trail effect
+                           if (Math.random() < 0.3) {
+                               createLightningTrail(x + offsetX * 0.8, y + offsetY * 0.8, velocity);
+                           }
+                       }
+                   }, i * particleDelay);
+               }
+               
+               // Store trail position with velocity
+               touchTrail.push({ x, y, time: now, velocity });
+               
+               // Keep only recent trail points (optimized cleanup)
+               if (touchTrail.length > 20) {
+                   touchTrail = touchTrail.filter(point => now - point.time < 800);
+               }
+           }
+          
+          function createAuroraTrail(x, y, velocity = 0) {
+               const aurora = document.createElement('div');
+               aurora.className = 'aurora-trail';
+               aurora.style.left = x + 'px';
+               aurora.style.top = y + 'px';
+               
+               // Dynamic Aurora colors based on position and velocity
+               const hue1 = (x + y) % 360; // Position-based hue
+               const hue2 = (hue1 + 120 + velocity * 2) % 360; // Velocity affects color shift
+               const hue3 = (hue2 + 120) % 360;
+               
+               const size = 15 + velocity * 0.3;
+               const intensity = 0.6 + Math.min(velocity * 0.01, 0.4);
+               
+               aurora.style.width = size + 'px';
+               aurora.style.height = (size * 0.6) + 'px';
+               aurora.style.background = `
+                   radial-gradient(ellipse 100% 60% at center, 
+                       hsla(${hue1}, 100%, 70%, ${intensity}) 0%,
+                       hsla(${hue2}, 90%, 60%, ${intensity * 0.8}) 30%,
+                       hsla(${hue3}, 80%, 50%, ${intensity * 0.6}) 60%,
+                       transparent 100%)`;
+               
+               aurora.style.boxShadow = `
+                   0 0 ${size}px hsla(${hue1}, 100%, 70%, 0.8),
+                   0 0 ${size * 2}px hsla(${hue2}, 90%, 60%, 0.6),
+                   0 0 ${size * 3}px hsla(${hue3}, 80%, 50%, 0.4)`;
+               
+               aurora.style.animation = `auroraFlow ${2 + Math.random()}s ease-out forwards`;
+               
+               document.body.appendChild(aurora);
+               
+               setTimeout(() => {
+                   if (aurora.parentNode) {
+                       aurora.remove();
+                   }
+               }, 3000);
+               
+               return aurora;
+           }
+          
+          function createNebulaParticle(x, y, targetX = null, targetY = null, velocity = 0) {
+               const nebula = document.createElement('div');
+               nebula.className = 'nebula-particle';
+               nebula.style.left = x + 'px';
+               nebula.style.top = y + 'px';
+               
+               // Cosmic nebula colors with depth
+               const baseHue = Math.random() * 60 + 240; // Purple to blue range
+               const saturation = 70 + Math.random() * 30;
+               const lightness = 40 + Math.random() * 30;
+               
+               const size = 20 + velocity * 0.2 + Math.random() * 15;
+               const opacity = 0.4 + Math.min(velocity * 0.008, 0.3);
+               
+               nebula.style.width = size + 'px';
+               nebula.style.height = size + 'px';
+               nebula.style.background = `
+                   radial-gradient(ellipse at 30% 30%, 
+                       hsla(${baseHue}, ${saturation}%, ${lightness + 20}%, ${opacity}) 0%,
+                       hsla(${baseHue + 30}, ${saturation - 10}%, ${lightness}%, ${opacity * 0.8}) 40%,
+                       hsla(${baseHue + 60}, ${saturation - 20}%, ${lightness - 10}%, ${opacity * 0.6}) 70%,
+                       transparent 100%)`;
+               
+               if (targetX !== null && targetY !== null) {
+                   const deltaX = targetX - x;
+                   const deltaY = targetY - y;
+                   nebula.style.setProperty('--target-x', deltaX + 'px');
+                   nebula.style.setProperty('--target-y', deltaY + 'px');
+                   nebula.style.animation = 'nebulaConverge 2.5s ease-out forwards';
+               } else {
+                   nebula.style.animation = 'nebulaExpand 3s ease-out forwards';
+               }
+               
+               document.body.appendChild(nebula);
+               
+               setTimeout(() => {
+                   if (nebula.parentNode) {
+                       nebula.remove();
+                   }
+               }, targetX !== null ? 3000 : 3500);
+               
+               return nebula;
+           }
+          
+          function createLightningTrail(x, y, velocity = 0) {
+               const lightning = document.createElement('div');
+               lightning.className = 'lightning-trail';
+               lightning.style.left = x + 'px';
+               lightning.style.top = y + 'px';
+               
+               // Lightning bolt shape and colors
+               const width = 3 + velocity * 0.1;
+               const height = 25 + velocity * 0.2;
+               const intensity = 0.8 + Math.min(velocity * 0.005, 0.2);
+               
+               // Electric blue to white gradient
+               lightning.style.width = width + 'px';
+               lightning.style.height = height + 'px';
+               lightning.style.background = `
+                   linear-gradient(${Math.random() * 360}deg,
+                       rgba(135, 206, 255, ${intensity}) 0%,
+                       rgba(255, 255, 255, ${intensity * 0.9}) 20%,
+                       rgba(173, 216, 255, ${intensity * 0.8}) 40%,
+                       rgba(255, 255, 255, ${intensity}) 60%,
+                       rgba(135, 206, 255, ${intensity * 0.7}) 80%,
+                       transparent 100%)`;
+               
+               lightning.style.boxShadow = `
+                   0 0 ${width * 3}px rgba(135, 206, 255, 0.8),
+                   0 0 ${width * 6}px rgba(255, 255, 255, 0.6),
+                   0 0 ${width * 9}px rgba(173, 216, 255, 0.4)`;
+               
+               lightning.style.animation = `lightningStrike ${0.8 + Math.random() * 0.4}s ease-out forwards`;
+               
+               document.body.appendChild(lightning);
+               
+               // Create electric sparks
+               for (let i = 0; i < 3; i++) {
+                   setTimeout(() => {
+                       createElectricSpark(x, y, velocity);
+                   }, i * 100);
+               }
+               
+               setTimeout(() => {
+                   if (lightning.parentNode) {
+                       lightning.remove();
+                   }
+               }, 1500);
+               
+               return lightning;
+           }
+          
+          function createElectricSpark(x, y, velocity = 0) {
+               const spark = document.createElement('div');
+               spark.className = 'electric-spark';
+               spark.style.left = x + 'px';
+               spark.style.top = y + 'px';
+               
+               const size = 2 + Math.random() * 3;
+               const sparkX = (Math.random() - 0.5) * 30;
+               const sparkY = (Math.random() - 0.5) * 30;
+               
+               spark.style.width = size + 'px';
+               spark.style.height = size + 'px';
+               spark.style.background = `
+                   radial-gradient(circle,
+                       rgba(255, 255, 255, 0.9) 0%,
+                       rgba(135, 206, 255, 0.8) 30%,
+                       rgba(173, 216, 255, 0.6) 60%,
+                       transparent 100%)`;
+               
+               spark.style.boxShadow = `
+                   0 0 ${size * 2}px rgba(255, 255, 255, 0.8),
+                   0 0 ${size * 4}px rgba(135, 206, 255, 0.6)`;
+               
+               spark.style.setProperty('--spark-x', sparkX + 'px');
+               spark.style.setProperty('--spark-y', sparkY + 'px');
+               spark.style.animation = `electricSpark ${0.6 + Math.random() * 0.3}s ease-out forwards`;
+               
+               document.body.appendChild(spark);
+               
+               setTimeout(() => {
+                   if (spark.parentNode) {
+                       spark.remove();
+                   }
+               }, 1000);
+               
+               return spark;
+           }
+          
+          function createConvergeEffect(centerX, centerY) {
+               // Create multiple converge patterns for galaxy effect
+               const patterns = [
+                   { numStars: 8, radius: 80, delay: 0 },
+                   { numStars: 12, radius: 120, delay: 300 },
+                   { numStars: 16, radius: 160, delay: 600 }
+               ];
+               
+               patterns.forEach((pattern, patternIndex) => {
+                   setTimeout(() => {
+                       for (let i = 0; i < pattern.numStars; i++) {
+                           const angle = (i / pattern.numStars) * Math.PI * 2;
+                           const startX = centerX + Math.cos(angle) * pattern.radius;
+                           const startY = centerY + Math.sin(angle) * pattern.radius;
+                           
+                           setTimeout(() => {
+                               createStarParticle(startX, startY, centerX, centerY);
+                               
+                               // Add premium converge effects
+                               if (Math.random() < 0.6) {
+                                   createAuroraTrail(startX, startY, 40);
+                               }
+                               if (Math.random() < 0.3) {
+                                   createNebulaParticle(startX, startY, centerX, centerY, 60);
+                               }
+                           }, i * 50);
+                       }
+                   }, pattern.delay);
+               });
+               
+               // Add spiral effect
+               setTimeout(() => {
+                   for (let i = 0; i < 20; i++) {
+                       const angle = (i / 20) * Math.PI * 4; // 2 full rotations
+                       const radius = 200 - (i * 8); // Spiral inward
+                       const startX = centerX + Math.cos(angle) * radius;
+                       const startY = centerY + Math.sin(angle) * radius;
+                       
+                       setTimeout(() => {
+                           createStarParticle(startX, startY, centerX, centerY);
+                           
+                           // Premium spiral effects
+                           if (Math.random() < 0.8) {
+                               createAuroraTrail(startX, startY, 50 + i * 2);
+                           }
+                           if (Math.random() < 0.5) {
+                               createNebulaParticle(startX, startY, centerX, centerY, 70 + i);
+                           }
+                       }, i * 80);
+                   }
+               }, 1000);
+           }
+
+        // Global touch events for star trail effect (Mobile only)
+        if (isMobile) {
+            document.addEventListener('touchstart', (e) => {
+                if (!e.target.closest('.floating-contact-menu')) {
+                    if (isMenuOpen) {
+                        isMenuOpen = false;
+                        subContactButtons.classList.remove('active');
+                        mainContactBtn.style.transform = 'rotate(0deg)';
+                        mainContactBtn.querySelector('.btn-icon').textContent = '💬';
+                        mainContactBtn.querySelector('.btn-text').textContent = 'Liên hệ';
+                    }
+                    // Start star trail
+                    isTracking = true;
+                    const touch = e.touches[0];
+                    createStarTrail(touch.clientX, touch.clientY);
+                }
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (isTracking && !e.target.closest('.floating-contact-menu')) {
+                    const touch = e.touches[0];
+                    createStarTrail(touch.clientX, touch.clientY);
+                }
+            });
+
+            document.addEventListener('touchend', (e) => {
+                if (isTracking) {
+                    isTracking = false;
+                    // Create converge effect at the end point
+                    if (touchTrail.length > 0) {
+                        const lastPoint = touchTrail[touchTrail.length - 1];
+                        setTimeout(() => {
+                            createConvergeEffect(lastPoint.x, lastPoint.y);
+                        }, 200);
+                    }
+                    touchTrail = [];
+                }
+            });
+        } else {
+            // Desktop click event for closing menu
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.floating-contact-menu') && isMenuOpen) {
+                    isMenuOpen = false;
+                    subContactButtons.classList.remove('active');
+                    mainContactBtn.style.transform = 'rotate(0deg)';
+                    mainContactBtn.querySelector('.btn-icon').textContent = '💬';
+                    mainContactBtn.querySelector('.btn-text').textContent = 'Liên hệ';
+                }
+            });
+        }
 
         // Interactive cursor effect (Desktop only)
         if (!isMobile) {
